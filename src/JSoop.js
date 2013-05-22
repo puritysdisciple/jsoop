@@ -9,6 +9,7 @@
 		OBJECT:    4,
 		ELEMENT:   5,
 		BOOL:      6,
+		FUNCTION:  7,
 		
 		//Methods
 		is: function (obj, type) {
@@ -29,6 +30,8 @@
 					return JSoop.isObject(obj);
 				case JSoop.ELEMENT:
 					return JSoop.isElement(obj);
+				case JSoop.FUNCTION:
+					return JSoop.isFunction(obj);
 				default:
 					return false;
 			}
@@ -62,6 +65,10 @@
 			var type = typeof obj;
 			
 			return type === 'string' || type === 'number' || type === 'boolean';
+		},
+
+		isFunction: function (obj) {
+			return toString.call(obj) === '[object Function]';
 		},
 		
 		iterate: function (obj, fn) {
@@ -134,6 +141,29 @@
 			}
 			
 			return obj;
-		}
+		},
+
+		objectQuery: function (path, root) {
+			var parts = path.split('.'),
+				i, length;
+
+			root = root || window;
+
+			for (i = 0, length = parts.length; i < length; i = i + 1) {
+				if (root[parts[i]] === undefined) {
+					return undefined;
+				}
+
+				root = root[parts[i]];
+			}
+
+			return root;
+		},
+
+		error: function (msg) {
+			console.error(msg);
+		},
+
+		emptyFn: function () {}
 	};
 }());

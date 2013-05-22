@@ -1,0 +1,28 @@
+<script src="src/JSoop.js"></script>
+<script src="src/jsoop/Base.js"></script>
+<script src="src/jsoop/ClassManager.js"></script>
+<script>
+JSoop.define('MyNamespace.TestClass', {
+  newMethod: function () {
+    return 'test';
+  }
+});
+
+JSoop.define('MyNamespace.TestChildClass', {
+  extend: 'MyNamespace.TestClass',
+  newMethod: function () {
+    return this.callParent() + ' sub method';
+  }
+});
+
+JSoop.define('MyNamespace.TestSingleton', {
+  singleton: true,
+  newMethod: function () {
+    console.log('test');
+  }
+});
+
+var obj = JSoop.create('MyNamespace.TestChildClass');
+
+obj.newMethod();
+</script>
