@@ -160,8 +160,35 @@
 			return root;
 		},
 
-		error: function (msg) {
-			console.error(msg);
+		error: function (error) {
+				//BUG FIX:
+				//Gecko rendering engine doesn't seem to reparse the scope. arguments fixes this. Unknown reason.
+			var nArgs = arguments,
+				method = this.error.caller;
+
+			if (JSoop.isString(error)) {
+				error = {
+					level: 'error',
+					msg: error,
+					stack: true
+				};
+			}
+
+			if (method) {
+				if (method.$name) {
+					error.sourceMethod = method.$name;
+				}
+
+				if (method.$owner) {
+					error.sourceClass = method.$owner.$className;
+				}
+			}
+
+			if (JSoop.throwErrors !== false) {
+				JSoop.log(error);
+			}
+
+			throw error.msg;
 		},
 
 		emptyFn: function () {}

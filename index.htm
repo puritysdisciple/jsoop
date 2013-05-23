@@ -24,5 +24,6 @@ JSoop.define('MyNamespace.TestSingleton', {
 
 var obj = JSoop.create('MyNamespace.TestChildClass');
 
-obj.newMethod();
+console.log(obj.newMethod());
+MyNamespace.TestSingleton.newMethod();
 </script>

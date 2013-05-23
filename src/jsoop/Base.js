@@ -1,12 +1,25 @@
 (function () {
-	var Base = JSoop.Base = function () {};
+	var Base = JSoop.Base = function () {},
+		EmptyClass = function () {},
+		create = Object.create || function (obj) {
+			var newObj;
+
+			EmptyClass.prototype = obj;
+
+			newObj = new EmptyClass();
+
+			EmptyClass.prototype = null;
+
+			return newObj;
+		};
 
 	Base.prototype = {
 		$className: 'JSoop.Base',
 		$class: Base,
+		$isClass: true,
 
-		init: function () {
-
+		constructor: function () {
+			return this;
 		},
 
 		callParent: function (args) {
@@ -47,6 +60,57 @@
 			}
 
 			return parentClass.prototype[methodName].apply(this, args || []);
+		},
+
+		/**
+		 * @private
+		 * Adds a new member to the class.
+		 * @param {string} name The name of the member.
+		 * @param {Mixed} member The member to add.
+		 */
+		addMember: function (name, member) {
+			var me = this;
+
+			if (JSoop.isFunction(member)) {
+				me.prototype.addMethod.call(me, name, member);
+			} else {
+				me.prototype.addProperty.call(me, name, member);
+			}
+		},
+
+		addMethod: function (name, method) {
+			var me = this,
+				origin;
+
+			if (typeof method.$owner !== 'undefined' && method !== JSoop.emptyFn) {
+				origin = method;
+
+				method = function () {
+					return origin.apply(me, arguments);
+				};
+			}
+
+			method.$owner = me;
+			method.$name = name;
+
+			me.prototype[name] = method;
+		},
+
+		addProperty: function (name, property) {
+			this.prototype[name] = property;
+		},
+
+		extend: function (parentClass) {
+			if (JSoop.isString(parentClass)) {
+				parentClass = JSoop.objectQuery(parentClass);
+			}
+
+			var me = this,
+				prototype = me.prototype = create(parentClass.prototype);
+
+			me.superClass = parentClass;
+
+			//Todo: Compensate for lack of JSoop.Base extend
 		}
 	};
 }());
