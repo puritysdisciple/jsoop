@@ -8,13 +8,6 @@ JSoop.define('MyNamespace.TestClass', {
   }
 });
 
-JSoop.define('MyNamespace.TestChildClass', {
-  extend: 'MyNamespace.TestClass',
-  newMethod: function () {
-    return this.callParent() + ' sub method';
-  }
-});
-
 JSoop.define('MyNamespace.TestSingleton', {
   singleton: true,
   newMethod: function () {
@@ -22,8 +15,24 @@ JSoop.define('MyNamespace.TestSingleton', {
   }
 });
 
+JSoop.define('MyNamespace.MyMixin', {
+  mixinMethod: function () {
+    console.log('I came from a mixin');
+  }
+});
+
+JSoop.define('MyNamespace.TestChildClass', {
+  extend: 'MyNamespace.TestClass',
+  mixins: 'MyNamespace.MyMixin',
+  newMethod: function () {
+    console.log(this.callParent() + ' sub method');
+  }
+});
+
 var obj = JSoop.create('MyNamespace.TestChildClass');
 
-console.log(obj.newMethod());
+obj.newMethod();
+obj.mixinMethod();
 MyNamespace.TestSingleton.newMethod();
+console.log(JSoop.is(obj, 'MyNamespace.TestClass'));
 </script>

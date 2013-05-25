@@ -62,12 +62,6 @@
 			return parentClass.prototype[methodName].apply(this, args || []);
 		},
 
-		/**
-		 * @private
-		 * Adds a new member to the class.
-		 * @param {string} name The name of the member.
-		 * @param {Mixed} member The member to add.
-		 */
 		addMember: function (name, member) {
 			var me = this;
 

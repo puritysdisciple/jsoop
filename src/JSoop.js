@@ -13,7 +13,7 @@
 		
 		//Methods
 		is: function (obj, type) {
-			if (JSoop.isString(obj)) {
+			if (JSoop.isString(type)) {
 				return JSoop.instanceOf(obj, type);
 			}
 			
@@ -70,6 +70,14 @@
 		isFunction: function (obj) {
 			return toString.call(obj) === '[object Function]';
 		},
+
+		instanceOf: function (obj, type) {
+			if (JSoop.isString(type)) {
+				type = JSoop.objectQuery(type);
+			}
+
+			return obj instanceof type;
+		},
 		
 		iterate: function (obj, fn) {
 			if (!JSoop.isObject(obj)) {
@@ -120,7 +128,7 @@
 			
 			for (key in source) {
 				if (source.hasOwnProperty(key)) {
-					if (target[key] === undefined) {
+					if (!target.hasOwnProperty(key)) {
 						target[key] = source[key];
 					}
 				}
@@ -133,11 +141,11 @@
 				i, length;
 							
 			for (i = 0, length = parts.length; i < length; i = i + 1) {
-				if (obj[parts] === undefined) {
-					obj[parts] = {};
+				if (obj[parts[i]] === undefined) {
+					obj[parts[i]] = {};
 				}
 				
-				obj = obj[parts];
+				obj = obj[parts[i]];
 			}
 			
 			return obj;

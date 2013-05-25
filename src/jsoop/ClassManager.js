@@ -109,13 +109,7 @@
 
 			return me.instantiators[length];
 		},
-		/**
-		 * @method
-		 * Creates an object based on the passed class name.
-		 * @param {String} className The class that needs to be instantiated.
-		 * @param {Object...} args Any arguments that need to be passed to the class' constructor.
-		 * @return {Object} The instantiated object.
-		 */
+
 		instantiate: function () {
 			var me = this,
 				args = Array.prototype.slice.call(arguments, 0),
@@ -127,6 +121,7 @@
 	});
 
 	JSoop.apply(CM.processors, {
+		//This is needed to stop the extend property from showing up in the prototype
 		extend: function () {},
 
 		mixins: function (className, cls, config, callback) {
@@ -139,9 +134,13 @@
 					mixin = JSoop.objectQuery(mixin);
 				}
 
-				JSoop.iterate(mixin.prototype, function (member, key) {
-					cls.prototype[key] = member;
-				});
+				var key;
+
+				for (key in mixin.prototype) {
+					if (mixin.prototype.hasOwnProperty(key)) {
+						cls.prototype[key] = mixin.prototype[key];
+					}
+				}
 			});
 		},
 
