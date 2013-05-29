@@ -27,20 +27,23 @@
 
 			var me = this,
 				newClass = makeConstructor(),
-				processors = [];
+				processors = [],
+				key;
 
 			BP.extend.call(newClass, config.extend);
 			newClass.prototype.$className = className;
 
 			//At this point we have a new class that extends the specified class.
 			//Now we need to apply all the new members to it from the config.
-			JSoop.iterate(config, function (member, key) {
-				if (!CM.processors.hasOwnProperty(key)) {
-					BP.addMember.call(newClass, key, member);
-				} else {
-					processors.push(key);
+			for (key in config) {
+				if (config.hasOwnProperty(key)) {
+					if (!CM.processors.hasOwnProperty(key)) {
+						BP.addMember.call(newClass, key, config[key]);
+					} else {
+						processors.push(key);
+					}
 				}
-			});
+			}
 
 			config.onCreate = callback || JSoop.emptyFn;
 
@@ -124,6 +127,20 @@
 		//This is needed to stop the extend property from showing up in the prototype
 		extend: function () {},
 
+		aliases: function (className, cls, config, callback) {
+			var key;
+
+			if (!config.aliases) {
+				config.aliases = {};
+			}
+
+			for (key in config.aliases) {
+				if (config.aliases.hasOwnProperty(key)) {
+					BP.alias.call(newClass, key, config.aliases[key]);
+				}
+			}
+		},
+
 		mixins: function (className, cls, config, callback) {
 			if (!config.mixins) {
 				config.mixins = [];
@@ -173,13 +190,3 @@
 		return CM.instantiate.apply(CM, arguments);
 	};
 }());
-
-/*
-X Create new class
-X Extend existing class
-Add members
-X Add mixins - Special
-X Make singleton - Special
-X Add statics - Special
-Set global name
-*/

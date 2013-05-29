@@ -94,6 +94,27 @@
 			this.prototype[name] = property;
 		},
 
+		alias: function (method, alias) {
+			var me = this,
+				prototype = me.prototype;
+
+			if (JSoop.isString(alias)) {
+				alias = {
+					name: alias
+				};
+			}
+
+			JSoop.applyIf(alias, {
+				root: prototype
+			});
+
+			if (JSoop.isString(alias.root)) {
+				alias.root = JSoop.objectQuery(alias.root);
+			}
+
+			alias.root[alias.name] = prototype[method];
+		},
+
 		extend: function (parentClass) {
 			if (JSoop.isString(parentClass)) {
 				parentClass = JSoop.objectQuery(parentClass);
