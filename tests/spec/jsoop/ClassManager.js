@@ -1,76 +1,76 @@
 describe('JSoop.ClassManager', function () {
-	describe('should be able to define a new class', function () {
-		it('which should extend JSoop.Base', function () {
-			JSoop.ClassManager.create('TestNamespace.BaseTest', {});
+    describe('should be able to define a new class', function () {
+        it('which should extend JSoop.Base', function () {
+            JSoop.ClassManager.create('TestNamespace.BaseTest', {});
 
-			//Need to do this because we haven't tested instantiation
-			var obj = new TestNamespace.BaseTest();
+            //Need to do this because we haven't tested instantiation
+            var obj = new TestNamespace.BaseTest();
 
-			expect(JSoop.is(obj, 'JSoop.Base')).toBe(true);
-		});
+            expect(JSoop.is(obj, 'JSoop.Base')).toBe(true);
+        });
 
-		it('as a singleton', function () {
-			JSoop.ClassManager.create('TestNamespace.Singleton', {
-				singleton: true
-			});
+        it('as a singleton', function () {
+            JSoop.ClassManager.create('TestNamespace.Singleton', {
+                singleton: true
+            });
 
-			expect(JSoop.is(TestNamespace.Singleton, 'JSoop.Base')).toBe(true);
-		});
+            expect(JSoop.is(TestNamespace.Singleton, 'JSoop.Base')).toBe(true);
+        });
 
-		it('with mixins', function () {
-			JSoop.ClassManager.create('TestNamespace.Mixin', {
-				mixMethod: function () {
+        it('with mixins', function () {
+            JSoop.ClassManager.create('TestNamespace.Mixin', {
+                mixMethod: function () {
 
-				}
-			});
+                }
+            });
 
-			JSoop.ClassManager.create('TestNamespace.MixinTest', {
-				mixins: 'TestNamespace.Mixin'
-			});
+            JSoop.ClassManager.create('TestNamespace.MixinTest', {
+                mixins: 'TestNamespace.Mixin'
+            });
 
-			var obj = new TestNamespace.MixinTest();
+            var obj = new TestNamespace.MixinTest();
 
-			expect(obj.mixMethod).toBeDefined();
-		});
+            expect(obj.mixMethod).toBeDefined();
+        });
 
-		it('with static methods', function () {
-			JSoop.ClassManager.create('TestNamespace.StaticTest', {
-				statics: {
-					staticMethod: function () {
+        it('with static methods', function () {
+            JSoop.ClassManager.create('TestNamespace.StaticTest', {
+                statics: {
+                    staticMethod: function () {
 
-					}
-				}
-			});
+                    }
+                }
+            });
 
-			expect(TestNamespace.StaticTest.staticMethod).toBeDefined();
-		});
-	});
+            expect(TestNamespace.StaticTest.staticMethod).toBeDefined();
+        });
+    });
 
-	it('should be able to instantiate classes', function () {
-		JSoop.ClassManager.create('TestNamespace.ArgTest1', {
-			constructor: function () {
-				console.log('fired');
-				if (arguments.length !== 1) {
-					throw new Error();
-				}
-			}
-		});
-		JSoop.ClassManager.create('TestNamespace.ArgTest2', {
-			constructor: function () {
-				if (arguments.length !== 2) {
-					throw new Error();
-				}
-			}
-		});
+    it('should be able to instantiate classes', function () {
+        JSoop.ClassManager.create('TestNamespace.ArgTest1', {
+            constructor: function () {
+                console.log('fired');
+                if (arguments.length !== 1) {
+                    throw new Error();
+                }
+            }
+        });
+        JSoop.ClassManager.create('TestNamespace.ArgTest2', {
+            constructor: function () {
+                if (arguments.length !== 2) {
+                    throw new Error();
+                }
+            }
+        });
 
-		var argTest1 = function () {
-				var obj = JSoop.ClassManager.instantiate('TestNamespace.ArgTest1', 'arg1');
-			},
-			argTest2 = function () {
-				var obj = JSoop.ClassManager.instantiate('TestNamespace.ArgTest2', 'arg1', 'arg2');
-			};
+        var argTest1 = function () {
+                var obj = JSoop.ClassManager.instantiate('TestNamespace.ArgTest1', 'arg1');
+            },
+            argTest2 = function () {
+                var obj = JSoop.ClassManager.instantiate('TestNamespace.ArgTest2', 'arg1', 'arg2');
+            };
 
-		expect(argTest1).not.toThrow();
-		expect(argTest2).not.toThrow();
-	});
+        expect(argTest1).not.toThrow();
+        expect(argTest2).not.toThrow();
+    });
 });

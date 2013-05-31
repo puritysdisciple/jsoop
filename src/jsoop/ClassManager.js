@@ -1,192 +1,195 @@
 (function () {
-	var makeConstructor = function () {
-			function constructor () {
-				return this.constructor.apply(this, arguments) || null;
-			}
+    "use strict";
 
-			return constructor;
-		},
-		aliasCache = {},
-		classCache = {},
-		BP = JSoop.Base.prototype,
-		CM = JSoop.ClassManager = {};
+    var makeConstructor = function () {
+            function constructor () {
+                return this.constructor.apply(this, arguments) || null;
+            }
 
-	JSoop.apply(CM, {
-		processors: {},
+            return constructor;
+        },
+        aliasCache = {},
+        classCache = {},
+        BP = JSoop.Base.prototype,
+        CM = JSoop.ClassManager = {};
 
-		create: function (className, config, callback) {
-			if (classCache[className]) {
-				//Todo: throw an error if the class has already been defined
+    JSoop.apply(CM, {
+        processors: {},
 
-				return;
-			}
+        create: function (className, config, callback) {
+            if (classCache[className]) {
+                //Todo: throw an error if the class has already been defined
 
-			JSoop.applyIf(config, {
-				extend: 'JSoop.Base'
-			});
+                return;
+            }
 
-			var me = this,
-				newClass = makeConstructor(),
-				processors = [],
-				key;
+            JSoop.applyIf(config, {
+                extend: 'JSoop.Base'
+            });
 
-			BP.extend.call(newClass, config.extend);
-			newClass.prototype.$className = className;
+            var me = this,
+                newClass = makeConstructor(),
+                processors = [],
+                key;
 
-			//At this point we have a new class that extends the specified class.
-			//Now we need to apply all the new members to it from the config.
-			for (key in config) {
-				if (config.hasOwnProperty(key)) {
-					if (!CM.processors.hasOwnProperty(key)) {
-						BP.addMember.call(newClass, key, config[key]);
-					} else {
-						processors.push(key);
-					}
-				}
-			}
+            BP.extend.call(newClass, config.extend);
+            newClass.prototype.$className = className;
 
-			config.onCreate = callback || JSoop.emptyFn;
+            //At this point we have a new class that extends the specified class.
+            //Now we need to apply all the new members to it from the config.
+            for (key in config) {
+                if (config.hasOwnProperty(key)) {
+                    if (!CM.processors.hasOwnProperty(key)) {
+                        BP.addMember.call(newClass, key, config[key]);
+                    } else {
+                        processors.push(key);
+                    }
+                }
+            }
 
-			//Initialize and execute all processors found while adding members.
-			me.initProcessors(processors, config);
+            config.onCreate = callback || JSoop.emptyFn;
 
-			me.process.call(CM, className, newClass, config, CM.process);
-		},
+            //Initialize and execute all processors found while adding members.
+            me.initProcessors(processors, config);
 
-		initProcessors: function (processors, config) {
-			JSoop.each(processors, function (processor, index) {
-				processors[index] = CM.processors[processor];
-			});
+            me.process.call(CM, className, newClass, config, CM.process);
+        },
 
-			config.processors = processors;
-		},
+        initProcessors: function (processors, config) {
+            JSoop.each(processors, function (processor, index) {
+                processors[index] = CM.processors[processor];
+            });
 
-		process: function (className, cls, config, callback) {
-			var me = this,
-				processor = config.processors.shift();
+            config.processors = processors;
+        },
 
-			if (!processor) {
-				me.set(className, cls);
+        process: function (className, cls, config, callback) {
+            var me = this,
+                processor = config.processors.shift();
 
-				config.onCreate(cls);
+            if (!processor) {
+                me.set(className, cls);
 
-				return;
-			}
+                config.onCreate(cls);
 
-			if (processor.call(CM, className, cls, config, callback) !== false) {
-				callback.call(CM, className, cls, config, callback);
-			}
-		},
+                return;
+            }
 
-		set: function (className, cls) {
-			classCache[className] = cls;
+            if (processor.call(CM, className, cls, config, callback) !== false) {
+                callback.call(CM, className, cls, config, callback);
+            }
+        },
 
-			var namespace = className.split('.');
+        set: function (className, cls) {
+            classCache[className] = cls;
 
-			className = namespace.pop();
+            var namespace = className.split('.');
 
-			namespace = JSoop.namespace(namespace.join('.'));
+            className = namespace.pop();
 
-			namespace[className] = cls;
-		},
+            namespace = JSoop.namespace(namespace.join('.'));
 
-		getInstantiator: function (length) {
-			var me = this;
+            namespace[className] = cls;
+        },
 
-			me.instantiators = me.instantiators || [];
+        getInstantiator: function (length) {
+            var me = this,
+                args,
+                i;
 
-			if (length > 3) {
-				//Todo: issue a warning when attempting to use more than three arguments.
-			}
+            me.instantiators = me.instantiators || [];
 
-			if (!me.instantiators[length]) {
-				var args = [],
-					i;
+            if (length > 3) {
+                //Todo: issue a warning when attempting to use more than three arguments.
+            }
 
-				for (i = 0; i < length; i = i + 1) {
-					args.push('a[' + i + ']');
-				}
+            if (!me.instantiators[length]) {
+                args = [];
 
-				me.instantiators[length] = new Function('c', 'a', 'return new c(' + args.join(',') + ');');
-			}
+                for (i = 0; i < length; i = i + 1) {
+                    args.push('a[' + i + ']');
+                }
 
-			return me.instantiators[length];
-		},
+                me.instantiators[length] = new Function('c', 'a', 'return new c(' + args.join(',') + ');');
+            }
 
-		instantiate: function () {
-			var me = this,
-				args = Array.prototype.slice.call(arguments, 0),
-				className = args.shift(),
-				cls = classCache[className];
+            return me.instantiators[length];
+        },
 
-			return me.getInstantiator(args.length)(cls, args);
-		}
-	});
+        instantiate: function () {
+            var me = this,
+                args = Array.prototype.slice.call(arguments, 0),
+                className = args.shift(),
+                cls = classCache[className];
 
-	JSoop.apply(CM.processors, {
-		//This is needed to stop the extend property from showing up in the prototype
-		extend: function () {},
+            return me.getInstantiator(args.length)(cls, args);
+        }
+    });
 
-		aliases: function (className, cls, config, callback) {
-			var key;
+    JSoop.apply(CM.processors, {
+        //This is needed to stop the extend property from showing up in the prototype
+        extend: function () {},
 
-			if (!config.aliases) {
-				config.aliases = {};
-			}
+        aliases: function (className, cls, config, callback) {
+            var key;
 
-			for (key in config.aliases) {
-				if (config.aliases.hasOwnProperty(key)) {
-					BP.alias.call(newClass, key, config.aliases[key]);
-				}
-			}
-		},
+            if (!config.aliases) {
+                config.aliases = {};
+            }
 
-		mixins: function (className, cls, config, callback) {
-			if (!config.mixins) {
-				config.mixins = [];
-			}
+            for (key in config.aliases) {
+                if (config.aliases.hasOwnProperty(key)) {
+                    BP.alias.call(cls, key, config.aliases[key]);
+                }
+            }
+        },
 
-			JSoop.each(config.mixins, function (mixin) {
-				if (JSoop.isString(mixin)) {
-					mixin = JSoop.objectQuery(mixin);
-				}
+        mixins: function (className, cls, config, callback) {
+            if (!config.mixins) {
+                config.mixins = [];
+            }
 
-				var key;
+            JSoop.each(config.mixins, function (mixin) {
+                if (JSoop.isString(mixin)) {
+                    mixin = JSoop.objectQuery(mixin);
+                }
 
-				for (key in mixin.prototype) {
-					if (mixin.prototype.hasOwnProperty(key)) {
-						cls.prototype[key] = mixin.prototype[key];
-					}
-				}
-			});
-		},
+                var key;
 
-		singleton: function (className, cls, config, callback) {
-			if (!config.singleton) {
-				return true;
-			}
+                for (key in mixin.prototype) {
+                    if (mixin.prototype.hasOwnProperty(key)) {
+                        cls.prototype[key] = mixin.prototype[key];
+                    }
+                }
+            });
+        },
 
-			callback.call(CM, className, new cls(), config, callback);
+        singleton: function (className, cls, config, callback) {
+            if (!config.singleton) {
+                return true;
+            }
 
-			return false;
-		},
+            callback.call(CM, className, new cls(), config, callback);
 
-		statics: function (className, cls, config, callback) {
-			if (!config.statics) {
-				config.statics = {};
-			}
+            return false;
+        },
 
-			JSoop.iterate(config.statics, function (member, key) {
-				cls[key] = member;
-			});
-		}
-	});
+        statics: function (className, cls, config, callback) {
+            if (!config.statics) {
+                config.statics = {};
+            }
 
-	JSoop.define = function () {
-		CM.create.apply(CM, arguments);
-	};
+            JSoop.iterate(config.statics, function (member, key) {
+                cls[key] = member;
+            });
+        }
+    });
 
-	JSoop.create = function () {
-		return CM.instantiate.apply(CM, arguments);
-	};
+    JSoop.define = function () {
+        CM.create.apply(CM, arguments);
+    };
+
+    JSoop.create = function () {
+        return CM.instantiate.apply(CM, arguments);
+    };
 }());

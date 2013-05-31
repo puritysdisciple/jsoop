@@ -1,38 +1,21 @@
 <script src="src/JSoop.js"></script>
 <script src="src/jsoop/Base.js"></script>
 <script src="src/jsoop/ClassManager.js"></script>
+<script src="src/jsoop/mixins/Observable.js"></script>
 <script>
 JSoop.define('MyNamespace.TestClass', {
-  newMethod: function () {
-    return 'test';
+  mixins: 'JSoop.mixins.Observable',
+  constructor: function () {
+    var me = this;
+
+    me.addEvents('myEvent');
   }
 });
 
-JSoop.define('MyNamespace.TestSingleton', {
-  singleton: true,
-  newMethod: function () {
-    console.log('test');
-  }
+var obj = JSoop.create('MyNamespace.TestClass');
+
+obj.on('myEvent', function () {
+  console.log('fired');
 });
-
-JSoop.define('MyNamespace.MyMixin', {
-  mixinMethod: function () {
-    console.log('I came from a mixin');
-  }
-});
-
-JSoop.define('MyNamespace.TestChildClass', {
-  extend: 'MyNamespace.TestClass',
-  mixins: 'MyNamespace.MyMixin',
-  newMethod: function () {
-    console.log(this.callParent() + ' sub method');
-  }
-});
-
-var obj = JSoop.create('MyNamespace.TestChildClass');
-
-obj.newMethod();
-obj.mixinMethod();
-MyNamespace.TestSingleton.newMethod();
-console.log(JSoop.is(obj, 'MyNamespace.TestClass'));
+obj.fireEvent('myEvent');
 </script>

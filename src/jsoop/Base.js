@@ -1,131 +1,135 @@
 (function () {
-	var Base = JSoop.Base = function () {},
-		EmptyClass = function () {},
-		create = Object.create || function (obj) {
-			var newObj;
+    "use strict";
 
-			EmptyClass.prototype = obj;
+    var Base = JSoop.Base = function () {},
+        EmptyClass = function () {},
+        create = Object.create || function (obj) {
+            var newObj;
 
-			newObj = new EmptyClass();
+            EmptyClass.prototype = obj;
 
-			EmptyClass.prototype = null;
+            newObj = new EmptyClass();
 
-			return newObj;
-		};
+            EmptyClass.prototype = null;
 
-	Base.prototype = {
-		$className: 'JSoop.Base',
-		$class: Base,
-		$isClass: true,
+            return newObj;
+        };
 
-		constructor: function () {
-			return this;
-		},
+    Base.prototype = {
+        $className: 'JSoop.Base',
+        $class: Base,
+        $isClass: true,
 
-		callParent: function (args) {
-			var me = this,
-				//BUG FIX: Gecko rendering engine doesn't seem to reparse the scope. arguments fixes this. Unknown reason.
-				tmpArgs = arguments,
-				method = me.callParent.caller,
-				methodName, parentClass, tempClass;
+        constructor: function () {
+            return this;
+        },
 
-			if (method != null && !method.$owner) {
-				if (!method.caller) {
-					JSoop.error('Unable to locate method for callParent to execute.');
-				}
+        callParent: function (args) {
+            var me = this,
+                //BUG FIX: Gecko rendering engine doesn't seem to reparse the scope. arguments fixes this. Unknown reason.
+                tmpArgs = arguments,
+                method = me.callParent.caller,
+                methodName,
+                parentClass,
+                tempClass;
 
-				method = method.caller;
-			}
+            if (method !== null && !method.$owner) {
+                if (!method.caller) {
+                    JSoop.error('Unable to locate method for callParent to execute.');
+                }
 
-			if (!method.$owner) {
-				JSoop.error('Unable to resolve method for callParent. Make sure all methods are added using JSoop.define.');
-			}
+                method = method.caller;
+            }
 
-			methodName = method.$name;
-			parentClass = method.$owner.superClass;
+            if (!method.$owner) {
+                JSoop.error('Unable to resolve method for callParent. Make sure all methods are added using JSoop.define.');
+            }
 
-			tempClass = parentClass;
+            methodName = method.$name;
+            parentClass = method.$owner.superClass;
 
-			//Crawl up the class chain to make sure the class has the called method.
-			do {
-				if (methodName in tempClass.prototype) {
-					break;
-				}
+            tempClass = parentClass;
 
-				tempClass = tempClass.superClass;
-			} while (tempClass);
+            //Crawl up the class chain to make sure the class has the called method.
+            do {
+                if (tempClass.prototype.hasOwnProperty(methodName)) {
+                    break;
+                }
 
-			if (!tempClass) {
-				JSoop.error('No parent method "' + methodName + '" was found in ' + parentClass.prototype.$className + '.');
-			}
+                tempClass = tempClass.superClass;
+            } while (tempClass);
 
-			return parentClass.prototype[methodName].apply(this, args || []);
-		},
+            if (!tempClass) {
+                JSoop.error('No parent method "' + methodName + '" was found in ' + parentClass.prototype.$className + '.');
+            }
 
-		addMember: function (name, member) {
-			var me = this;
+            return parentClass.prototype[methodName].apply(this, args || []);
+        },
 
-			if (JSoop.isFunction(member)) {
-				me.prototype.addMethod.call(me, name, member);
-			} else {
-				me.prototype.addProperty.call(me, name, member);
-			}
-		},
+        addMember: function (name, member) {
+            var me = this;
 
-		addMethod: function (name, method) {
-			var me = this,
-				origin;
+            if (JSoop.isFunction(member)) {
+                me.prototype.addMethod.call(me, name, member);
+            } else {
+                me.prototype.addProperty.call(me, name, member);
+            }
+        },
 
-			if (typeof method.$owner !== 'undefined' && method !== JSoop.emptyFn) {
-				origin = method;
+        addMethod: function (name, method) {
+            var me = this,
+                origin;
 
-				method = function () {
-					return origin.apply(me, arguments);
-				};
-			}
+            if (method.$owner === undefined && method !== JSoop.emptyFn) {
+                origin = method;
 
-			method.$owner = me;
-			method.$name = name;
+                method = function () {
+                    return origin.apply(me, arguments);
+                };
+            }
 
-			me.prototype[name] = method;
-		},
+            method.$owner = me;
+            method.$name = name;
 
-		addProperty: function (name, property) {
-			this.prototype[name] = property;
-		},
+            me.prototype[name] = method;
+        },
 
-		alias: function (method, alias) {
-			var me = this,
-				prototype = me.prototype;
+        addProperty: function (name, property) {
+            this.prototype[name] = property;
+        },
 
-			if (JSoop.isString(alias)) {
-				alias = {
-					name: alias
-				};
-			}
+        alias: function (method, alias) {
+            var me = this,
+                prototype = me.prototype;
 
-			JSoop.applyIf(alias, {
-				root: prototype
-			});
+            if (JSoop.isString(alias)) {
+                alias = {
+                    name: alias
+                };
+            }
 
-			if (JSoop.isString(alias.root)) {
-				alias.root = JSoop.objectQuery(alias.root);
-			}
+            JSoop.applyIf(alias, {
+                root: prototype
+            });
 
-			alias.root[alias.name] = prototype[method];
-		},
+            if (JSoop.isString(alias.root)) {
+                alias.root = JSoop.objectQuery(alias.root);
+            }
 
-		extend: function (parentClass) {
-			if (JSoop.isString(parentClass)) {
-				parentClass = JSoop.objectQuery(parentClass);
-			}
+            alias.root[alias.name] = prototype[method];
+        },
 
-			var me = this,
-				prototype = me.prototype = create(parentClass.prototype);
+        extend: function (parentClass) {
+            if (JSoop.isString(parentClass)) {
+                parentClass = JSoop.objectQuery(parentClass);
+            }
 
-			me.superClass = parentClass;
+            var me = this,
+                prototype = me.prototype = create(parentClass.prototype);
 
-			//Todo: Compensate for lack of JSoop.Base extend
-		}
-	};
+            me.superClass = parentClass;
+
+            //Todo: Compensate for lack of JSoop.Base extend
+        }
+    };
 }());
