@@ -24,48 +24,6 @@
             return this;
         },
 
-        callParent: function (args) {
-            var me = this,
-                //BUG FIX: Gecko rendering engine doesn't seem to reparse the scope. arguments fixes this. Unknown reason.
-                tmpArgs = arguments,
-                method = me.callParent.caller,
-                methodName,
-                parentClass,
-                tempClass;
-
-            if (method !== null && !method.$owner) {
-                if (!method.caller) {
-                    JSoop.error('Unable to locate method for callParent to execute.');
-                }
-
-                method = method.caller;
-            }
-
-            if (!method.$owner) {
-                JSoop.error('Unable to resolve method for callParent. Make sure all methods are added using JSoop.define.');
-            }
-
-            methodName = method.$name;
-            parentClass = method.$owner.superClass;
-
-            tempClass = parentClass;
-
-            //Crawl up the class chain to make sure the class has the called method.
-            do {
-                if (tempClass.prototype.hasOwnProperty(methodName)) {
-                    break;
-                }
-
-                tempClass = tempClass.superClass;
-            } while (tempClass);
-
-            if (!tempClass) {
-                JSoop.error('No parent method "' + methodName + '" was found in ' + parentClass.prototype.$className + '.');
-            }
-
-            return parentClass.prototype[methodName].apply(this, args || []);
-        },
-
         addMember: function (name, member) {
             var me = this;
 
@@ -77,16 +35,7 @@
         },
 
         addMethod: function (name, method) {
-            var me = this,
-                origin;
-
-            if (method.$owner === undefined && method !== JSoop.emptyFn) {
-                origin = method;
-
-                method = function () {
-                    return origin.apply(me, arguments);
-                };
-            }
+            var me = this;
 
             method.$owner = me;
             method.$name = name;
@@ -124,12 +73,58 @@
                 parentClass = JSoop.objectQuery(parentClass);
             }
 
-            var me = this,
-                prototype = me.prototype = create(parentClass.prototype);
+            var me = this;
+
+            me.prototype = create(parentClass.prototype);
 
             me.superClass = parentClass;
 
             //Todo: Compensate for lack of JSoop.Base extend
         }
     };
+}());
+
+//This is needed because method.caller is not available in strict mode.
+(function () {
+    JSoop.Base.prototype.callParent = function (args) {
+        var me = this,
+        //BUG FIX: Gecko rendering engine doesn't seem to reparse the scope. arguments fixes this. Unknown reason.
+            tmpArgs = arguments,
+            method = me.callParent.caller,
+            methodName,
+            parentClass,
+            tempClass;
+
+        if (method !== null && !method.$owner) {
+            if (!method.caller) {
+                JSoop.error('Unable to locate method for callParent to execute.');
+            }
+
+            method = method.caller;
+        }
+
+        if (!method.$owner) {
+            JSoop.error('Unable to resolve method for callParent. Make sure all methods are added using JSoop.define.');
+        }
+
+        methodName = method.$name;
+        parentClass = method.$owner.superClass;
+
+        tempClass = parentClass;
+
+        //Crawl up the class chain to make sure the class has the called method.
+        do {
+            if (tempClass.prototype.hasOwnProperty(methodName)) {
+                break;
+            }
+
+            tempClass = tempClass.superClass;
+        } while (tempClass);
+
+        if (!tempClass) {
+            JSoop.error('No parent method "' + methodName + '" was found in ' + parentClass.prototype.$className + '.');
+        }
+
+        return parentClass.prototype[methodName].apply(this, args || []);
+    }
 }());

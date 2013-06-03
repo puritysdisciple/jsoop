@@ -2,9 +2,11 @@
     "use strict";
 
     var toString = Object.prototype.toString,
-        JSoop = window.JSoop = {};
+        JSoop = {};
 
     //CONSTANTS
+    JSoop.GLOBAL   = Function('return this')();
+
     JSoop.STRING   = 1;
     JSoop.ARRAY    = 2;
     JSoop.NUMBER   = 3;
@@ -139,7 +141,7 @@
 
     JSoop.namespace = function (path) {
         var parts = path.split('.'),
-            obj = window,
+            obj = JSoop.GLOBAL,
             i,
             length;
 
@@ -159,7 +161,7 @@
             i,
             length;
 
-        root = root || window;
+        root = root || JSoop.GLOBAL;
 
         for (i = 0, length = parts.length; i < length; i = i + 1) {
             if (root[parts[i]] === undefined) {
@@ -172,9 +174,16 @@
         return root;
     };
 
+    JSoop.emptyFn = function () {};
+
+    JSoop.GLOBAL.JSoop = JSoop;
+}());
+
+//This is needed because method.caller is not available in strict mode.
+(function () {
     JSoop.error = function (error) {
-            //BUG FIX:
-            //Gecko rendering engine doesn't seem to reparse the scope. arguments fixes this. Unknown reason.
+        //BUG FIX:
+        //Gecko rendering engine doesn't seem to reparse the scope. arguments fixes this. Unknown reason.
         var nArgs = arguments,
             method = this.error.caller;
 
@@ -202,6 +211,4 @@
 
         throw error.msg;
     };
-
-    JSoop.emptyFn = function () {};
 }());
