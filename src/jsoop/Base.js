@@ -20,9 +20,26 @@
         $class: Base,
         $isClass: true,
 
-        constructor: function () {
-            return this;
+        initConfig: function (config) {
+            var me = this;
+
+            if (me.defaults) {
+                JSoop.applyIf(config || {}, JSoop.clone(me.defaults));
+            }
+
+            JSoop.apply(me, config);
         },
+
+        constructor: function (config) {
+            var me = this;
+
+            me.initConfig(config || {});
+            me.init();
+
+            return me;
+        },
+
+        init: JSoop.emptyFn,
 
         addMember: function (name, member) {
             var me = this;

@@ -1,0 +1,37 @@
+{
+    "projectName": "JSoop",
+    "deployDir": "build",
+    "licenseText": "",
+    "packages": [{
+        "id": "core",
+        "name": "Core",
+        "file": "pkgs/core.js",
+        "fileIncludes": [{
+            "text": "JSoop.js",
+            "path": "src/"
+        }, {
+            "text": "Base.js",
+            "path": "src/jsoop/"
+        }, {
+            "text": "ClassManager.js",
+            "path": "src/jsoop/"
+        }]
+    }],
+    "builds": [{
+        "name": "All Debug",
+        "target": "jsoop-debug.js",
+        "options": {
+            "debug": true
+        },
+        "packages": [
+            "core"
+        ]
+    }, {
+        "name": "All",
+        "target": "jsoop.js",
+        "compress": true,
+        "packages": [
+            "core"
+        ]
+    }]
+}
