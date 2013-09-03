@@ -20,26 +20,9 @@
         $class: Base,
         $isClass: true,
 
-        initConfig: function (config) {
-            var me = this;
-
-            if (me.defaults) {
-                JSoop.applyIf(config || {}, JSoop.clone(me.defaults));
-            }
-
-            JSoop.apply(me, config);
+        constructor: function () {
+            return this;
         },
-
-        constructor: function (config) {
-            var me = this;
-
-            me.initConfig(config || {});
-            me.init();
-
-            return me;
-        },
-
-        init: JSoop.emptyFn,
 
         addMember: function (name, member) {
             var me = this;
@@ -85,18 +68,31 @@
             alias.root[alias.name] = prototype[method];
         },
 
-        extend: function (parentClass) {
+        extend: function (parentClassName) {
+            var parentClass = parentClassName;
+
             if (JSoop.isString(parentClass)) {
                 parentClass = JSoop.objectQuery(parentClass);
             }
 
-            var me = this;
+            if (!parentClass) {
+                JSoop.error(parentClassName + ' is not defined');
+            }
+
+            var me = this,
+                key;
 
             me.prototype = create(parentClass.prototype);
 
             me.superClass = parentClass;
 
-            //Todo: Compensate for lack of JSoop.Base extend
+            if (!parentClass.prototype.$isClass) {
+                for (key in Base.prototype) {
+                    if (Base.prototype.hasOwnProperty(key)) {
+                        me.prototype[key] = Base.prototype[key];
+                    }
+                }
+            }
         }
     };
 }());

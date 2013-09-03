@@ -47,8 +47,10 @@
         },
 
         createScope: function (listener) {
+            var callFn = listener.callFn;
+
             return function () {
-                return listener.callFn.apply(listener.scope, arguments);
+                return callFn.apply(listener.scope, arguments);
             };
         },
 
@@ -72,11 +74,12 @@
 
         fire: function () {
             var me = this,
+                listeners = me.listeners.slice(),
                 i,
                 length;
 
-            for (i = 0, length = me.listeners.length; i < length; i = i + 1) {
-                if (me.listeners[i].callFn.apply(this, arguments) === false) {
+            for (i = 0, length = listeners.length; i < length; i = i + 1) {
+                if (listeners[i].callFn.apply(this, arguments) === false) {
                     return;
                 }
             }
@@ -86,7 +89,10 @@
     JSoop.define('JSoop.mixins.Observable', {
         aliases: {
             addListener: 'on',
-            removeListener: 'un'
+            removeListener: 'un',
+
+            addManagedListener: 'mon',
+            removeManagedListener: 'mun'
         },
 
         addEvents: function () {
@@ -181,13 +187,61 @@
         fireEvent: function () {
             var me = this,
                 args = Array.prototype.slice.call(arguments, 0),
-                ename = args.shift();
+                ename = args.shift(),
+                nativeCallbackName = 'on' + ename.substr(0, 1).toUpperCase() + ename.substr(1);
 
             if (!me.hasEvent(ename)) {
                 return;
             }
 
-            me.events[ename].fire();
+            if (me[nativeCallbackName] && JSoop.isFunction(me[nativeCallbackName])) {
+                if (me[nativeCallbackName].apply(me, args) === false) {
+                    return;
+                }
+            }
+
+            me.events[ename].fire.apply(me.events[ename], args);
+        },
+        addManagedListener: function (observable, ename, fn, scope, options) {
+            var me = this,
+                managedListeners = me.managedListeners = me.managedListeners || [];
+
+            managedListeners.push({
+                observable: observable,
+                ename: ename,
+                fn: fn
+            });
+
+            observable.on(ename, fn, scope, options);
+        },
+        removeManagedListener: function (observable, ename, fn) {
+            var me = this,
+                managedListeners = (me.managedListeners)? me.managedListeners.slice() : [],
+                i, length;
+
+            for (i = 0, length = managedListeners.length; i < length; i = i + 1) {
+                me.removeManagedListenerItem(false, managedListeners[i], observable, ename, fn);
+            }
+        },
+        removeManagedListenerItem: function (clear, listener, observable, ename, fn) {
+            var me = this,
+                managedListeners = me.managedListeners || [];
+
+            if (clear || (listener.observable === observable && (!ename || listener.ename === ename) && (!fn || listener.fn === fn))) {
+                listener.observable.un(listener.ename, listener.fn);
+
+                managedListeners.splice(managedListeners.indexOf(listener), 1);
+            }
+        },
+
+        removeAllManagedListeners: function () {
+            var me = this,
+                managedListeners = (me.managedListeners)? me.managedListeners.slice() : [],
+                i, length;
+
+            for (i = 0, length = managedListeners.length; i < length; i = i + 1) {
+                me.removeManagedListenerItem(true, managedListeners[i]);
+            }
         }
     });
 }());

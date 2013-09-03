@@ -174,7 +174,41 @@
         return root;
     };
 
+    JSoop.clone = (function () {
+        function clone (value) {
+            var obj, i, length;
+
+            if (JSoop.isPrimative(value)) {
+                return value;
+            } else if (JSoop.isArray(value)) {
+                obj = [];
+
+                for (i = 0, length = value.length; i < length; i = i + 1) {
+                    obj.push(clone(value[i]));
+                }
+
+                return obj;
+            } else if (JSoop.isObject(value)) {
+                obj = {};
+
+                for (i in value) {
+                    if (value.hasOwnProperty(i)) {
+                        obj[i] = clone(i);
+                    }
+                }
+
+                return obj;
+            }
+
+            return value;
+        }
+
+        return clone;
+    }());
+
     JSoop.emptyFn = function () {};
+
+    JSoop.log = (console)? console.log.bind(console) : JSoop.emptyFn;
 
     JSoop.GLOBAL.JSoop = JSoop;
 }());
