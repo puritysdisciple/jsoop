@@ -193,7 +193,7 @@
 
                 for (i in value) {
                     if (value.hasOwnProperty(i)) {
-                        obj[i] = clone(i);
+                        obj[i] = clone(value[i]);
                     }
                 }
 
