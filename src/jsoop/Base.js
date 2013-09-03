@@ -20,8 +20,38 @@
         $class: Base,
         $isClass: true,
 
-        constructor: function () {
-            return this;
+        initConfig: function (config) {
+            var me = this,
+                defaults = me.defaults,
+                currentProto = me.$class.prototype;
+
+            if (!config) {
+                config = {};
+            }
+
+            me.originalConfig = config;
+
+            while (defaults) {
+                JSoop.applyIf(config || {}, JSoop.clone(defaults));
+
+                if (currentProto.superClass) {
+                    currentProto = currentProto.superClass.prototype;
+                    defaults = currentProto.defaults;
+                } else {
+                    defaults = false;
+                }
+            }
+
+            JSoop.apply(me, config);
+        },
+
+        constructor: function (config) {
+            var me = this;
+
+            me.initConfig(config || {});
+            me.init();
+
+            return me;
         },
 
         addMember: function (name, member) {
@@ -84,7 +114,7 @@
 
             me.prototype = create(parentClass.prototype);
 
-            me.superClass = parentClass;
+            me.superClass = me.prototype.superClass = parentClass;
 
             if (!parentClass.prototype.$isClass) {
                 for (key in Base.prototype) {
@@ -93,6 +123,8 @@
                     }
                 }
             }
+
+            me.prototype.$class = me;
         }
     };
 }());
