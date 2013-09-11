@@ -87,12 +87,22 @@
     });
 
     JSoop.define('JSoop.mixins.Observable', {
+        isObservable: true,
+
         aliases: {
             addListener: 'on',
             removeListener: 'un',
 
             addManagedListener: 'mon',
             removeManagedListener: 'mun'
+        },
+
+        constructor: function () {
+            var me = this;
+
+            if (me.listeners) {
+                me.on(me.listeners);
+            }
         },
 
         addEvents: function () {
@@ -103,7 +113,9 @@
             me.events = me.events || {};
 
             for (i = 0, length = arguments.length; i < length; i = i + 1) {
-                me.events[arguments[i]] = new JSoopEvent();
+                if (!me.events[arguments[i]]) {
+                    me.events[arguments[i]] = new JSoopEvent();
+                }
             }
         },
 
@@ -127,6 +139,10 @@
                     JSoop.apply(listeners, options);
                 }
 
+                if (!me.hasEvent(listeners.ename)) {
+                    me.addEvents(listeners.ename);
+                }
+
                 me.events[listeners.ename].addListener(listeners);
             } else {
                 //Find the default options
@@ -143,6 +159,11 @@
 
                         if (JSoop.isObject(listener)) {
                             listener.ename = key;
+                        } else if (JSoop.isFunction(listener)) {
+                            listener = {
+                                ename: key,
+                                fn: listener
+                            };
                         }
 
                         JSoop.applyIf(listener, defaultOptions);

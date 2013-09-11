@@ -146,18 +146,23 @@
 
         mixins: function (className, cls, config, callback) {
             if (!config.mixins) {
-                config.mixins = [];
+                config.mixins = {};
             }
 
-            JSoop.each(config.mixins, function (mixin) {
+            cls.prototype.mixins = {};
+
+            JSoop.iterate(config.mixins, function (mixin, name) {
                 if (JSoop.isString(mixin)) {
                     mixin = JSoop.objectQuery(mixin);
                 }
 
+                cls.prototype.mixins[name] = mixin;
+
                 var key;
 
                 for (key in mixin.prototype) {
-                    if (mixin.prototype.hasOwnProperty(key)) {
+                    if (mixin.prototype.hasOwnProperty(key) &&
+                        key !== 'constructor' && key.indexOf('$') === -1) {
                         cls.prototype[key] = mixin.prototype[key];
                     }
                 }

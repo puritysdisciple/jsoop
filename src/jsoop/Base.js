@@ -49,6 +49,7 @@
             var me = this;
 
             me.initConfig(config || {});
+
             me.init();
 
             return me;
