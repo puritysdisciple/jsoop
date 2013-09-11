@@ -15,6 +15,9 @@
         }, {
             "text": "ClassManager.js",
             "path": "src/jsoop/"
+        }, {
+            "text": "Observable.js",
+            "path": "src/jsoop/mixins/"
         }]
     }],
     "builds": [{
