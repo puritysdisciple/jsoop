@@ -20,40 +20,11 @@
         $class: Base,
         $isClass: true,
 
-        initConfig: function (config) {
-            var me = this,
-                defaults = me.defaults,
-                currentProto = me.$class.prototype;
-
-            if (!config) {
-                config = {};
-            }
-
-            me.originalConfig = config;
-
-            while (defaults) {
-                JSoop.applyIf(config || {}, JSoop.clone(defaults));
-
-                if (currentProto.superClass) {
-                    currentProto = currentProto.superClass.prototype;
-                    defaults = currentProto.defaults;
-                } else {
-                    defaults = false;
-                }
-            }
-
-            JSoop.apply(me, config);
+        constructor: function () {
+            return this;
         },
 
-        constructor: function (config) {
-            var me = this;
-
-            me.initConfig(config || {});
-
-            me.init();
-
-            return me;
-        },
+        init: JSoop.emptyFn,
 
         addMember: function (name, member) {
             var me = this;

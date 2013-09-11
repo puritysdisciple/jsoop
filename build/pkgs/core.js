@@ -174,7 +174,41 @@
         return root;
     };
 
+    JSoop.clone = (function () {
+        function clone (value) {
+            var obj, i, length;
+
+            if (JSoop.isPrimative(value)) {
+                return value;
+            } else if (JSoop.isArray(value)) {
+                obj = [];
+
+                for (i = 0, length = value.length; i < length; i = i + 1) {
+                    obj.push(clone(value[i]));
+                }
+
+                return obj;
+            } else if (JSoop.isObject(value)) {
+                obj = {};
+
+                for (i in value) {
+                    if (value.hasOwnProperty(i)) {
+                        obj[i] = clone(value[i]);
+                    }
+                }
+
+                return obj;
+            }
+
+            return value;
+        }
+
+        return clone;
+    }());
+
     JSoop.emptyFn = function () {};
+
+    JSoop.log = (console)? console.log.bind(console) : JSoop.emptyFn;
 
     JSoop.GLOBAL.JSoop = JSoop;
 }());
@@ -212,7 +246,6 @@
         throw error.msg;
     };
 }());
-
 (function () {
     "use strict";
 
@@ -236,10 +269,25 @@
         $isClass: true,
 
         initConfig: function (config) {
-            var me = this;
+            var me = this,
+                defaults = me.defaults,
+                currentProto = me.$class.prototype;
 
-            if (me.defaults) {
-                JSoop.applyIf(config || {}, JSoop.clone(me.defaults));
+            if (!config) {
+                config = {};
+            }
+
+            me.originalConfig = config;
+
+            while (defaults) {
+                JSoop.applyIf(config || {}, JSoop.clone(defaults));
+
+                if (currentProto.superClass) {
+                    currentProto = currentProto.superClass.prototype;
+                    defaults = currentProto.defaults;
+                } else {
+                    defaults = false;
+                }
             }
 
             JSoop.apply(me, config);
@@ -249,12 +297,11 @@
             var me = this;
 
             me.initConfig(config || {});
+
             me.init();
 
             return me;
         },
-
-        init: JSoop.emptyFn,
 
         addMember: function (name, member) {
             var me = this;
@@ -300,18 +347,33 @@
             alias.root[alias.name] = prototype[method];
         },
 
-        extend: function (parentClass) {
+        extend: function (parentClassName) {
+            var parentClass = parentClassName;
+
             if (JSoop.isString(parentClass)) {
                 parentClass = JSoop.objectQuery(parentClass);
             }
 
-            var me = this;
+            if (!parentClass) {
+                JSoop.error(parentClassName + ' is not defined');
+            }
+
+            var me = this,
+                key;
 
             me.prototype = create(parentClass.prototype);
 
-            me.superClass = parentClass;
+            me.superClass = me.prototype.superClass = parentClass;
 
-            //Todo: Compensate for lack of JSoop.Base extend
+            if (!parentClass.prototype.$isClass) {
+                for (key in Base.prototype) {
+                    if (Base.prototype.hasOwnProperty(key)) {
+                        me.prototype[key] = Base.prototype[key];
+                    }
+                }
+            }
+
+            me.prototype.$class = me;
         }
     };
 }());
@@ -360,7 +422,6 @@
         return parentClass.prototype[methodName].apply(this, args || []);
     }
 }());
-
 (function () {
     "use strict";
 
@@ -450,11 +511,7 @@
 
             className = namespace.pop();
 
-            if (namespace.length > 0) {
-                namespace = JSoop.namespace(namespace.join('.'));
-            } else {
-                namespace = JSoop.GLOBAL;
-            }
+            namespace = JSoop.namespace(namespace.join('.'));
 
             namespace[className] = cls;
         },
@@ -513,18 +570,23 @@
 
         mixins: function (className, cls, config, callback) {
             if (!config.mixins) {
-                config.mixins = [];
+                config.mixins = {};
             }
 
-            JSoop.each(config.mixins, function (mixin) {
+            cls.prototype.mixins = {};
+
+            JSoop.iterate(config.mixins, function (mixin, name) {
                 if (JSoop.isString(mixin)) {
                     mixin = JSoop.objectQuery(mixin);
                 }
 
+                cls.prototype.mixins[name] = mixin;
+
                 var key;
 
                 for (key in mixin.prototype) {
-                    if (mixin.prototype.hasOwnProperty(key)) {
+                    if (mixin.prototype.hasOwnProperty(key) &&
+                        key !== 'constructor' && key.indexOf('$') === -1) {
                         cls.prototype[key] = mixin.prototype[key];
                     }
                 }
@@ -559,5 +621,274 @@
     JSoop.create = function () {
         return CM.instantiate.apply(CM, arguments);
     };
+}());
+
+(function () {
+    "use strict";
+
+    var eventOptions = {
+            single: true,
+            scope: true
+        },
+        JSoopEvent = function () {
+            this.listeners = [];
+        };
+
+    JSoop.apply(JSoopEvent.prototype, {
+        addListener: function (listener) {
+            var me = this;
+
+            listener = me.initListener(listener);
+
+            me.listeners.push(listener);
+        },
+
+        initListener: function (listener) {
+            var me = this;
+
+            listener.callFn = listener.fn;
+
+            if (listener.single) {
+                listener.callFn = me.createSingle(listener);
+            }
+
+            if (listener.scope) {
+                listener.callFn = me.createScope(listener);
+            }
+
+            return listener;
+        },
+
+        createSingle: function (listener) {
+            var me = this;
+
+            return function () {
+                var ret = listener.callFn.apply(this, arguments);
+
+                me.removeListener(listener.fn);
+
+                return ret;
+            };
+        },
+
+        createScope: function (listener) {
+            var callFn = listener.callFn;
+
+            return function () {
+                return callFn.apply(listener.scope, arguments);
+            };
+        },
+
+        removeListener: function (fn) {
+            var me = this,
+                i,
+                length;
+
+            for (i = 0, length = me.listeners.length; i < length; i = i + 1) {
+                if (me.listeners[i].fn === fn) {
+                    me.listeners.splice(i, 1);
+
+                    return;
+                }
+            }
+        },
+
+        removeAllListeners: function () {
+            this.listeners = [];
+        },
+
+        fire: function () {
+            var me = this,
+                listeners = me.listeners.slice(),
+                i,
+                length;
+
+            for (i = 0, length = listeners.length; i < length; i = i + 1) {
+                if (listeners[i].callFn.apply(this, arguments) === false) {
+                    return;
+                }
+            }
+        }
+    });
+
+    JSoop.define('JSoop.mixins.Observable', {
+        isObservable: true,
+
+        aliases: {
+            addListener: 'on',
+            removeListener: 'un',
+
+            addManagedListener: 'mon',
+            removeManagedListener: 'mun'
+        },
+
+        constructor: function () {
+            var me = this;
+
+            if (me.listeners) {
+                me.on(me.listeners);
+            }
+        },
+
+        addEvents: function () {
+            var me = this,
+                i,
+                length;
+
+            me.events = me.events || {};
+
+            for (i = 0, length = arguments.length; i < length; i = i + 1) {
+                if (!me.events[arguments[i]]) {
+                    me.events[arguments[i]] = new JSoopEvent();
+                }
+            }
+        },
+
+        addListener: function (ename, callback, scope, options) {
+            var me = this,
+                listeners = ename,
+                defaultOptions = {},
+                listener,
+                key;
+
+            if (!JSoop.isObject(listeners)) {
+                listeners = {
+                    ename: listeners,
+                    fn: callback,
+                    scope: scope
+                };
+            }
+
+            if (listeners.ename) {
+                if (options) {
+                    JSoop.apply(listeners, options);
+                }
+
+                if (!me.hasEvent(listeners.ename)) {
+                    me.addEvents(listeners.ename);
+                }
+
+                me.events[listeners.ename].addListener(listeners);
+            } else {
+                //Find the default options
+                for (key in listeners) {
+                    if (listeners.hasOwnProperty(key) && eventOptions.hasOwnProperty(key)) {
+                        defaultOptions[key] = listeners[key];
+                    }
+                }
+
+                //Add the listeners
+                for (key in listeners) {
+                    if (listeners.hasOwnProperty(key) && !eventOptions.hasOwnProperty(key)) {
+                        listener = listeners[key];
+
+                        if (JSoop.isObject(listener)) {
+                            listener.ename = key;
+                        } else if (JSoop.isFunction(listener)) {
+                            listener = {
+                                ename: key,
+                                fn: listener
+                            };
+                        }
+
+                        JSoop.applyIf(listener, defaultOptions);
+
+                        me.addListener(listener);
+                    }
+                }
+            }
+        },
+        hasEvent: function (ename) {
+            return (this.events || {}).hasOwnProperty(ename);
+        },
+        removeListener: function (ename, fn) {
+            var me = this;
+
+            if (!me.hasEvent(ename)) {
+                return;
+            }
+
+            me.events[ename].removeListener(fn);
+        },
+        removeAllListeners: function (ename) {
+            var me = this,
+                key;
+
+            if (!ename) {
+                for (key in me.events) {
+                    if (me.events.hasOwnProperty(key)) {
+                        me.events[key].removeAllListeners();
+                    }
+                }
+
+                return;
+            }
+
+            if (!me.hasEvent(ename)) {
+                return;
+            }
+
+            me.events[ename].removeAllListeners();
+        },
+        fireEvent: function () {
+            var me = this,
+                args = Array.prototype.slice.call(arguments, 0),
+                ename = args.shift(),
+                nativeCallbackName = 'on' + ename.substr(0, 1).toUpperCase() + ename.substr(1);
+
+            if (!me.hasEvent(ename)) {
+                return;
+            }
+
+            if (me[nativeCallbackName] && JSoop.isFunction(me[nativeCallbackName])) {
+                if (me[nativeCallbackName].apply(me, args) === false) {
+                    return;
+                }
+            }
+
+            me.events[ename].fire.apply(me.events[ename], args);
+        },
+        addManagedListener: function (observable, ename, fn, scope, options) {
+            var me = this,
+                managedListeners = me.managedListeners = me.managedListeners || [];
+
+            managedListeners.push({
+                observable: observable,
+                ename: ename,
+                fn: fn
+            });
+
+            observable.on(ename, fn, scope, options);
+        },
+        removeManagedListener: function (observable, ename, fn) {
+            var me = this,
+                managedListeners = (me.managedListeners)? me.managedListeners.slice() : [],
+                i, length;
+
+            for (i = 0, length = managedListeners.length; i < length; i = i + 1) {
+                me.removeManagedListenerItem(false, managedListeners[i], observable, ename, fn);
+            }
+        },
+        removeManagedListenerItem: function (clear, listener, observable, ename, fn) {
+            var me = this,
+                managedListeners = me.managedListeners || [];
+
+            if (clear || (listener.observable === observable && (!ename || listener.ename === ename) && (!fn || listener.fn === fn))) {
+                listener.observable.un(listener.ename, listener.fn);
+
+                managedListeners.splice(managedListeners.indexOf(listener), 1);
+            }
+        },
+
+        removeAllManagedListeners: function () {
+            var me = this,
+                managedListeners = (me.managedListeners)? me.managedListeners.slice() : [],
+                i, length;
+
+            for (i = 0, length = managedListeners.length; i < length; i = i + 1) {
+                me.removeManagedListenerItem(true, managedListeners[i]);
+            }
+        }
+    });
 }());
 

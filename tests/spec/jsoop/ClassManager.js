@@ -25,7 +25,9 @@ describe('JSoop.ClassManager', function () {
             });
 
             JSoop.ClassManager.create('TestNamespace.MixinTest', {
-                mixins: 'TestNamespace.Mixin'
+                mixins: {
+                    testMixin: 'TestNamespace.Mixin'
+                }
             });
 
             var obj = new TestNamespace.MixinTest();
@@ -49,7 +51,6 @@ describe('JSoop.ClassManager', function () {
     it('should be able to instantiate classes', function () {
         JSoop.ClassManager.create('TestNamespace.ArgTest1', {
             constructor: function () {
-                console.log('fired');
                 if (arguments.length !== 1) {
                     throw new Error();
                 }

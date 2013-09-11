@@ -8,6 +8,11 @@
 
             return constructor;
         },
+        reservedKeys = {
+            $class: true,
+            $className: true,
+            superClass: true
+        },
         aliasCache = {},
         classCache = {},
         BP = JSoop.Base.prototype,
@@ -162,7 +167,7 @@
 
                 for (key in mixin.prototype) {
                     if (mixin.prototype.hasOwnProperty(key) &&
-                        key !== 'constructor' && key.indexOf('$') === -1) {
+                        !reservedKeys[key] && key !== 'constructor') {
                         cls.prototype[key] = mixin.prototype[key];
                     }
                 }
