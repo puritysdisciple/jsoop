@@ -35,10 +35,11 @@
         },
 
         createSingle: function (listener) {
-            var me = this;
+            var me = this,
+                callFn = listener.callFn;
 
             return function () {
-                var ret = listener.callFn.apply(this, arguments);
+                var ret = callFn.apply(this, arguments);
 
                 me.removeListener(listener.fn);
 

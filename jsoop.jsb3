@@ -15,8 +15,16 @@
         }, {
             "text": "ClassManager.js",
             "path": "src/jsoop/"
-        }, {
+        }]
+    }, {
+        "id": "mixins",
+        "name": "Mixins",
+        "file": "pkgs/mixins.js",
+        "fileIncludes": [{
             "text": "Observable.js",
+            "path": "src/jsoop/mixins/"
+        }, {
+            "text": "Configurable.js",
             "path": "src/jsoop/mixins/"
         }]
     }],
@@ -27,14 +35,16 @@
             "debug": true
         },
         "packages": [
-            "core"
+            "core",
+            "mixins"
         ]
     }, {
         "name": "All",
         "target": "jsoop.js",
         "compress": true,
         "packages": [
-            "core"
+            "core",
+            "mixins"
         ]
     }]
 }
