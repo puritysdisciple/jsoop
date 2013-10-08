@@ -13,7 +13,7 @@ JSoop.define('MyNamespace.MyClass', {
 
 ### Special Properties ###
 
-*Statics:* Used to add static members to a class.
+**statics:** Used to add static members to a class.
 
 ```js
 JSoop.define('MyNamespace.MyClass', {
@@ -26,14 +26,14 @@ JSoop.define('MyNamespace.MyClass', {
 MyNamespace.MyClass.foo
 ```
 
-*Extend:* Used to extend a parent class.
+**extend:** Used to extend a parent class.
 
 ```js
 JSoop.define('MyNamespace.MySubClass', {
 	extend: 'MyNamespace.MyParentClass'
 });
 ```
-*Singleton:* Used to set the class to an instance of itself creating a singleton.
+**singleton:** Used to set the class to an instance of itself creating a singleton.
 
 ```js
 JSoop.define('MyNamespace.MySingleton', {
@@ -47,4 +47,29 @@ JSoop.define('MyNamespace.MySingleton', {
 });
 
 MyNamespace.MySingleton.getFoo(); //returns 1
+```
+**mixins:** Applies the specified mixins to the class. Mixin constructors are not automatically called.
+
+```js
+JSoop.define('MyNamespace.MyClass', {
+	mixins: {
+		observable: 'JSoop.mixins.Observable'
+	},
+
+	constructor: function () {
+		//call configurable's constructor
+		this.mixins.observable.prototype.constructor.apply(this, arguments);
+
+		this.fireEvent('constructed', this);
+	}
+});
+```
+## Instantiating Classes ##
+
+```js
+JSoop.define('MyNamespace.MyClass', {
+	//members
+});
+
+var myObj = JSoop.create('MyNamespace.MyClass', arg1, arg2);
 ```
