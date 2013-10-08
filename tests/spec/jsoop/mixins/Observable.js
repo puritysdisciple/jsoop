@@ -58,4 +58,36 @@ describe('JSoop.mixins.Observable', function () {
             expect(scope.executes).toBe(2);
         });
     });
+
+    it('should be able to add a managed listener', function () {
+        var otherObj = JSoop.create('Namespace.TestObservable');
+
+        otherObj.addManagedListener(obj, 'event', function () {
+            executes = executes + 1;
+        });
+
+        obj.fireEvent('event');
+        obj.fireEvent('event');
+
+        expect(executes).toBe(2);
+    });
+
+    it('should be able to remove managed listeners', function () {
+        var otherObj = JSoop.create('Namespace.TestObservable');
+
+        otherObj.addManagedListener(obj, 'event', function () {
+            executes = executes + 1;
+        });
+
+        obj.fireEvent('event');
+        obj.fireEvent('event');
+
+        expect(executes).toBe(2);
+
+        otherObj.removeAllManagedListeners();
+
+        obj.fireEvent('event');
+
+        expect(executes).toBe(2);
+    });
 });
