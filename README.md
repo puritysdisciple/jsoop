@@ -57,10 +57,12 @@ JSoop.define('MyNamespace.MyClass', {
 	},
 
 	constructor: function () {
-		//call configurable's constructor
-		this.mixins.observable.prototype.constructor.apply(this, arguments);
+		var me = this;
 
-		this.fireEvent('constructed', this);
+		//call configurable's constructor
+		me.mixins.observable.prototype.constructor.apply(me, arguments);
+
+		me.fireEvent('constructed', me);
 	}
 });
 ```
@@ -68,7 +70,9 @@ JSoop.define('MyNamespace.MyClass', {
 
 ```js
 JSoop.define('MyNamespace.MyClass', {
-	//members
+	constructor: function (arg1, arg2) {
+		//...
+	}
 });
 
 var myObj = JSoop.create('MyNamespace.MyClass', arg1, arg2);
