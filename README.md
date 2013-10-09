@@ -23,7 +23,7 @@ JSoop.define('MyNamespace.MyClass', {
 	}
 });
 
-MyNamespace.MyClass.foo
+MyNamespace.MyClass.foo; //1
 ```
 
 **extend:** Used to extend a parent class.
