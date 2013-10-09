@@ -59,7 +59,7 @@ JSoop.define('MyNamespace.MyClass', {
 	constructor: function () {
 		var me = this;
 
-		//call configurable's constructor
+		//call observable's constructor
 		me.mixins.observable.prototype.constructor.apply(me, arguments);
 
 		me.fireEvent('constructed', me);
