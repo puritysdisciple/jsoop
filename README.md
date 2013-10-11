@@ -109,6 +109,27 @@ myObj.on('event', function () {
 });
 ```
 
+The <code>on</code> method accepts three arguments:
+
+* eventName: The name of the vent to listen for
+* callback: The function to call when the event is triggered
+* options: The options object for this listener
+    * scope: the object to scope the callback to
+    * single: if set to <cdoe>true</code> the listener will be removed after triggering
+
+Multiple events can be listened for at a time using the object syntax:
+
+```js
+myObj.on({
+	event1: function () {}
+	event2: function () {}
+	event3: {
+		fn: function () {}
+		single: true
+	}
+});
+```
+
 #### Triggering Events ####
 
 ```js
