@@ -77,3 +77,40 @@ JSoop.define('MyNamespace.MyClass', {
 
 var myObj = JSoop.create('MyNamespace.MyClass', arg1, arg2);
 ```
+
+## Mixins ##
+
+### Observable ###
+
+The Observable class is used to allow an object to handle custom events.
+
+```js
+JSoop.define('MyNamespace.MyClass', {
+	mixins: {
+		observable: 'JSoop.mixins.Observable'
+	},
+
+	constructor: function () {
+		var me = this;
+
+		//call observable's constructor
+		me.mixins.observable.prototype.constructor.apply(me, arguments);
+	}
+});
+```
+
+#### Listening for Events ####
+
+```js
+var myObj = JSoop.create('MyNamespace.MyClass');
+
+myObj.on('event', function () {
+	//...
+});
+```
+
+#### Triggering Events ####
+
+```js
+myObj.fireEvent('event', arg1, arg2, ...);
+```
