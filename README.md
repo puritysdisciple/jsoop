@@ -111,7 +111,7 @@ myObj.on('event', function () {
 
 The <code>on</code> method accepts three arguments:
 
-* eventName: The name of the vent to listen for
+* eventName: The name of the event to listen for
 * callback: The function to call when the event is triggered
 * options: The options object for this listener
     * scope: the object to scope the callback to

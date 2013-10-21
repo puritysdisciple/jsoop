@@ -125,7 +125,11 @@
             var me = this,
                 args = Array.prototype.slice.call(arguments, 0),
                 className = args.shift(),
+                cls = className;
+
+            if (JSoop.isString(cls)) {
                 cls = classCache[className];
+            }
 
             return me.getInstantiator(args.length)(cls, args);
         }
