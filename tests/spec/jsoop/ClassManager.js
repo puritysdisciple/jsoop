@@ -74,4 +74,25 @@ describe('JSoop.ClassManager', function () {
         expect(argTest1).not.toThrow();
         expect(argTest2).not.toThrow();
     });
+
+    it('should be able to instantiate classes with other names', function () {
+        JSoop.ClassManager.create('TestNamespace.AkaTest', {
+            aka: [
+                'OtherName',
+                'other.name'
+            ]
+        });
+
+        var obj = JSoop.ClassManager.instantiate('OtherName');
+
+        expect(JSoop.is(obj, 'JSoop.Base')).toBe(true);
+
+        obj = null;
+
+        expect(obj).toBe(null);
+
+        obj = JSoop.ClassManager.instantiate('other.name');
+
+        expect(JSoop.is(obj, 'JSoop.Base')).toBe(true);
+    });
 });

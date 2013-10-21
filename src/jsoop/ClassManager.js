@@ -13,7 +13,6 @@
             $className: true,
             superClass: true
         },
-        aliasCache = {},
         classCache = {},
         BP = JSoop.Base.prototype,
         CM = JSoop.ClassManager = {};
@@ -138,6 +137,16 @@
     JSoop.apply(CM.processors, {
         //This is needed to stop the extend property from showing up in the prototype
         extend: function () {},
+
+        aka: function (className, cls, config, callback) {
+            if (!config.aka) {
+                config.aka = [];
+            }
+
+            JSoop.each(config.aka, function (otherName) {
+                classCache[otherName] = cls;
+            });
+        },
 
         aliases: function (className, cls, config, callback) {
             var key;
