@@ -77,7 +77,7 @@ describe('JSoop.ClassManager', function () {
 
     it('should be able to instantiate classes with other names', function () {
         JSoop.ClassManager.create('TestNamespace.AkaTest', {
-            aka: [
+            alias: [
                 'OtherName',
                 'other.name'
             ]
@@ -94,5 +94,8 @@ describe('JSoop.ClassManager', function () {
         obj = JSoop.ClassManager.instantiate('other.name');
 
         expect(JSoop.is(obj, 'JSoop.Base')).toBe(true);
+
+        expect(JSoop.GLOBAL['other.name']).not.toBeDefined();
+        expect(JSoop.GLOBAL['OtherName']).not.toBeDefined();
     });
 });

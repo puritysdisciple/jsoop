@@ -138,26 +138,33 @@
         //This is needed to stop the extend property from showing up in the prototype
         extend: function () {},
 
-        aka: function (className, cls, config, callback) {
-            if (!config.aka) {
-                config.aka = [];
+        alias: function (className, cls, config, callback) {
+            var aliases = config.alias;
+
+            if (!aliases) {
+                config.aliases = [];
             }
 
-            JSoop.each(config.aka, function (otherName) {
+            if (!JSoop.isArray(aliases)) {
+                aliases = [aliases];
+            }
+
+            JSoop.each(aliases, function (otherName) {
                 classCache[otherName] = cls;
             });
         },
 
-        aliases: function (className, cls, config, callback) {
-            var key;
+        fnAlias: function (className, cls, config, callback) {
+            var key,
+                aliases = config.fnAlias;
 
-            if (!config.aliases) {
-                config.aliases = {};
+            if (!aliases) {
+                aliases = {};
             }
 
-            for (key in config.aliases) {
-                if (config.aliases.hasOwnProperty(key)) {
-                    BP.alias.call(cls, key, config.aliases[key]);
+            for (key in aliases) {
+                if (aliases.hasOwnProperty(key)) {
+                    BP.alias.call(cls, key, aliases[key]);
                 }
             }
         },

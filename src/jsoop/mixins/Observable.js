@@ -90,7 +90,7 @@
     JSoop.define('JSoop.mixins.Observable', {
         isObservable: true,
 
-        aliases: {
+        fnAlias: {
             addListener: 'on',
             removeListener: 'un',
 
