@@ -246,6 +246,7 @@
         throw error.msg;
     };
 }());
+
 (function () {
     "use strict";
 
@@ -409,7 +410,6 @@
             $className: true,
             superClass: true
         },
-        aliasCache = {},
         classCache = {},
         BP = JSoop.Base.prototype,
         CM = JSoop.ClassManager = {};
@@ -419,7 +419,7 @@
 
         create: function (className, config, callback) {
             if (classCache[className]) {
-                //Todo: throw an error if the class has already been defined
+                JSoop.error('A class named "' + className + '" is already defined');
 
                 return;
             }
@@ -500,10 +500,6 @@
 
             me.instantiators = me.instantiators || [];
 
-            if (length > 3) {
-                //Todo: issue a warning when attempting to use more than three arguments.
-            }
-
             if (!me.instantiators[length]) {
                 args = [];
 
@@ -521,7 +517,11 @@
             var me = this,
                 args = Array.prototype.slice.call(arguments, 0),
                 className = args.shift(),
+                cls = className;
+
+            if (JSoop.isString(cls)) {
                 cls = classCache[className];
+            }
 
             return me.getInstantiator(args.length)(cls, args);
         }
@@ -531,16 +531,33 @@
         //This is needed to stop the extend property from showing up in the prototype
         extend: function () {},
 
-        aliases: function (className, cls, config, callback) {
-            var key;
+        alias: function (className, cls, config, callback) {
+            var aliases = config.alias;
 
-            if (!config.aliases) {
-                config.aliases = {};
+            if (!aliases) {
+                config.aliases = [];
             }
 
-            for (key in config.aliases) {
-                if (config.aliases.hasOwnProperty(key)) {
-                    BP.alias.call(cls, key, config.aliases[key]);
+            if (!JSoop.isArray(aliases)) {
+                aliases = [aliases];
+            }
+
+            JSoop.each(aliases, function (otherName) {
+                classCache[otherName] = cls;
+            });
+        },
+
+        fnAlias: function (className, cls, config, callback) {
+            var key,
+                aliases = config.fnAlias;
+
+            if (!aliases) {
+                aliases = {};
+            }
+
+            for (key in aliases) {
+                if (aliases.hasOwnProperty(key)) {
+                    BP.alias.call(cls, key, aliases[key]);
                 }
             }
         },
@@ -600,6 +617,7 @@
     };
 }());
 
+
 (function () {
     "use strict";
 
@@ -637,10 +655,11 @@
         },
 
         createSingle: function (listener) {
-            var me = this;
+            var me = this,
+                callFn = listener.callFn;
 
             return function () {
-                var ret = listener.callFn.apply(this, arguments);
+                var ret = callFn.apply(this, arguments);
 
                 me.removeListener(listener.fn);
 
@@ -691,7 +710,7 @@
     JSoop.define('JSoop.mixins.Observable', {
         isObservable: true,
 
-        aliases: {
+        fnAlias: {
             addListener: 'on',
             removeListener: 'un',
 

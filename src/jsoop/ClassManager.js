@@ -22,7 +22,7 @@
 
         create: function (className, config, callback) {
             if (classCache[className]) {
-                //Todo: throw an error if the class has already been defined
+                JSoop.error('A class named "' + className + '" is already defined');
 
                 return;
             }
@@ -102,10 +102,6 @@
                 i;
 
             me.instantiators = me.instantiators || [];
-
-            if (length > 3) {
-                //Todo: issue a warning when attempting to use more than three arguments.
-            }
 
             if (!me.instantiators[length]) {
                 args = [];
