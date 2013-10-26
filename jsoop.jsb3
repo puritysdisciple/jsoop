@@ -26,6 +26,9 @@
         }, {
             "text": "Configurable.js",
             "path": "src/jsoop/mixins/"
+        }, {
+            "text": "PluginManager.js",
+            "path": "src/jsoop/mixins/"
         }]
     }],
     "builds": [{

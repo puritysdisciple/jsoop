@@ -83,16 +83,20 @@
         return obj instanceof type;
     };
 
-    JSoop.iterate = function (obj, fn) {
+    JSoop.iterate = function (obj, fn, scope) {
         if (!JSoop.isObject(obj)) {
             return false;
         }
 
         var key;
 
+        if (!scope) {
+            scope = JSoop.GLOBAL;
+        }
+
         for (key in obj) {
             if (obj.hasOwnProperty(key)) {
-                if (fn(obj[key], key, obj) === false) {
+                if (fn.call(scope, obj[key], key, obj) === false) {
                     return false;
                 }
             }
@@ -101,15 +105,19 @@
         return true;
     };
 
-    JSoop.each = function (arr, fn) {
+    JSoop.each = function (arr, fn, scope) {
+        if (!scope) {
+            scope = JSoop.GLOBAL;
+        }
+
         if (!JSoop.isArray(arr)) {
-            return fn(arr, 0, [arr]);
+            return fn.call(scope, arr, 0, [arr]);
         }
 
         var i, length;
 
         for (i = 0, length = arr.length; i < length; i = i + 1) {
-            if (fn(arr[i], i, arr) === false) {
+            if (fn.call(scope, arr[i], i, arr) === false) {
                 return false;
             }
         }

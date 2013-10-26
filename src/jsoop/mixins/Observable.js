@@ -212,14 +212,14 @@
                 ename = args.shift(),
                 nativeCallbackName = 'on' + ename.substr(0, 1).toUpperCase() + ename.substr(1);
 
-            if (!me.hasEvent(ename)) {
-                return;
-            }
-
             if (me[nativeCallbackName] && JSoop.isFunction(me[nativeCallbackName])) {
                 if (me[nativeCallbackName].apply(me, args) === false) {
                     return;
                 }
+            }
+
+            if (!me.hasEvent(ename)) {
+                return;
             }
 
             me.events[ename].fire.apply(me.events[ename], args);
