@@ -5,7 +5,7 @@
         JSoop = {};
 
     //CONSTANTS
-    JSoop.GLOBAL   = Function('return this')();
+    JSoop.GLOBAL   = (new Function('return this'))();
 
     JSoop.STRING   = 1;
     JSoop.ARRAY    = 2;
@@ -216,7 +216,17 @@
 
     JSoop.emptyFn = function () {};
 
-    JSoop.log = (console)? console.log.bind(console) : JSoop.emptyFn;
+    JSoop.log = (function () {
+        var console = JSoop.GLOBAL.console;
+
+        if (console) {
+            return function () {
+                return console.log.apply(console, arguments);
+            };
+        }
+
+        return JSoop.emptyFn;
+    }());
 
     JSoop.GLOBAL.JSoop = JSoop;
 }());

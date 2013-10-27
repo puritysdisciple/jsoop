@@ -258,7 +258,7 @@
 
         removeAllManagedListeners: function () {
             var me = this,
-                managedListeners = (me.managedListeners)? me.managedListeners.slice() : [],
+                managedListeners = me.managedListeners? me.managedListeners.slice() : [],
                 i, length;
 
             for (i = 0, length = managedListeners.length; i < length; i = i + 1) {
