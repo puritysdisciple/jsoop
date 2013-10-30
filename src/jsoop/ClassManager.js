@@ -182,8 +182,10 @@
                 var key;
 
                 for (key in mixin.prototype) {
-                    if (mixin.prototype.hasOwnProperty(key) &&
-                        !reservedKeys[key] && key !== 'constructor') {
+                    if (mixin.prototype.hasOwnProperty(key)
+                        && !reservedKeys[key]
+                        && key !== 'constructor'
+                        && !cls.prototype.hasOwnProperty(key)) {
                         cls.prototype[key] = mixin.prototype[key];
                     }
                 }
