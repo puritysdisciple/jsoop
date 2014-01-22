@@ -126,6 +126,10 @@
                 cls = classCache[className];
             }
 
+            if (!cls) {
+                JSoop.error('"' + className + '" is not defined');
+            }
+
             return me.getInstantiator(args.length)(cls, args);
         }
     });

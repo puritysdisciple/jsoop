@@ -214,6 +214,14 @@
         return clone;
     }());
 
+    JSoop.toArray = function (obj) {
+        if (!JSoop.isArray(obj)) {
+            return [obj];
+        }
+
+        return obj;
+    };
+
     JSoop.emptyFn = function () {};
 
     JSoop.log = (function () {

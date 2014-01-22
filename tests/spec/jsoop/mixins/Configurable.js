@@ -82,4 +82,33 @@ describe('JSoop.mixins.Configurable', function () {
         expect(myObj.childConfig).toBe(1);
         expect(myObj.parentConfig).toBe(1);
     });
+
+    it('should throw an error when required config keys are not passed', function () {
+        var myObj;
+
+        JSoop.define('TestNamespace.RequiredConfigTest', {
+            mixins: {
+                configurable: 'JSoop.mixins.Configurable'
+            },
+
+            required: [
+                'requiredKey'
+            ],
+
+            constructor: function (config) {
+                var me = this;
+
+                me.mixins.configurable.prototype.constructor.call(me, config);
+            }
+        });
+
+        expect(function () {
+            myObj = JSoop.create('TestNamespace.RequiredConfigTest');
+        }).toThrow();
+        expect(function () {
+            myObj = JSoop.create('TestNamespace.RequiredConfigTest', {
+                requiredKey: 1
+            });
+        }).not.toThrow();
+    });
 });

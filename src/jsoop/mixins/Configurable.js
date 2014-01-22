@@ -6,6 +6,7 @@
             var me = this;
 
             me.initConfig(config || {});
+            me.checkRequired();
         },
 
         initConfig: function (config) {
@@ -31,6 +32,22 @@
             }
 
             JSoop.apply(me, config);
+        },
+
+        checkRequired: function () {
+            var me = this,
+                required = me.required || [],
+                missing = [];
+
+            JSoop.each(required, function (key) {
+                if (me[key] === undefined) {
+                    missing.push(key);
+                }
+            });
+
+            if (missing.length > 0) {
+                JSoop.error(me.$className + ' missing required config keys "' + missing.join(', ') + '"');
+            }
         }
     });
 }());
