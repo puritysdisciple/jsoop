@@ -212,6 +212,10 @@
                 ename = args.shift(),
                 nativeCallbackName = 'on' + ename.substr(0, 1).toUpperCase() + ename.substr(1);
 
+            if (me.eventsSuspended) {
+                return;
+            }
+
             if (me[nativeCallbackName] && JSoop.isFunction(me[nativeCallbackName])) {
                 if (me[nativeCallbackName].apply(me, args) === false) {
                     return;
@@ -258,12 +262,24 @@
 
         removeAllManagedListeners: function () {
             var me = this,
-                managedListeners = me.managedListeners? me.managedListeners.slice() : [],
+                managedListeners = me.managedListeners ? me.managedListeners.slice() : [],
                 i, length;
 
             for (i = 0, length = managedListeners.length; i < length; i = i + 1) {
                 me.removeManagedListenerItem(true, managedListeners[i]);
             }
+        },
+
+        suspendEvents: function () {
+            var me = this;
+
+            me.eventsSuspended = true;
+        },
+
+        resumeEvents: function () {
+            var me = this;
+
+            me.eventsSuspended = false;
         }
     });
 }());

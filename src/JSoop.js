@@ -183,12 +183,14 @@
     };
 
     JSoop.clone = (function () {
-        function clone (value) {
+        var clone = function (value) {
             var obj, i, length;
 
             if (JSoop.isPrimative(value)) {
                 return value;
-            } else if (JSoop.isArray(value)) {
+            }
+
+            if (JSoop.isArray(value)) {
                 obj = [];
 
                 for (i = 0, length = value.length; i < length; i = i + 1) {
@@ -196,7 +198,9 @@
                 }
 
                 return obj;
-            } else if (JSoop.isObject(value)) {
+            }
+
+            if (JSoop.isObject(value)) {
                 obj = {};
 
                 for (i in value) {
@@ -209,7 +213,7 @@
             }
 
             return value;
-        }
+        };
 
         return clone;
     }());
@@ -241,10 +245,11 @@
 
 //This is needed because method.caller is not available in strict mode.
 (function () {
-    JSoop.error = function (error) {
+    JSoop.error = function () {
         //BUG FIX:
         //Gecko rendering engine doesn't seem to reparse the scope. arguments fixes this. Unknown reason.
         var nArgs = arguments,
+            error = nArgs[0],
             method = this.error.caller;
 
         if (JSoop.isString(error)) {
