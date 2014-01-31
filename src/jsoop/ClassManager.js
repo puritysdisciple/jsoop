@@ -39,6 +39,12 @@
             BP.extend.call(newClass, config.extend);
             newClass.prototype.$className = className;
 
+            if (config.requires) {
+                JSoop.Loader.require(config.requires);
+
+                delete config.requires;
+            }
+
             //At this point we have a new class that extends the specified class.
             //Now we need to apply all the new members to it from the config.
             for (key in config) {

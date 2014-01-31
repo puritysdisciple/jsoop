@@ -10,6 +10,9 @@
             "text": "JSoop.js",
             "path": "src/"
         }, {
+            "text": "Loader.js",
+            "path": "src/jsoop/"
+        }, {
             "text": "Base.js",
             "path": "src/jsoop/"
         }, {
