@@ -34,16 +34,19 @@
             var me = this,
                 newClass = makeConstructor(),
                 processors = [],
-                key;
+                requires, key;
 
             BP.extend.call(newClass, config.extend);
             newClass.prototype.$className = className;
 
-            if (config.requires) {
-                JSoop.Loader.require(config.requires);
+            JSoop.Loader.require(config.extend);
 
-                delete config.requires;
-            }
+            requires = JSoop.toArray(config.requires || []);
+            requires.push(config.extend);
+
+            JSoop.Loader.require(requires);
+
+            delete config.requires;
 
             //At this point we have a new class that extends the specified class.
             //Now we need to apply all the new members to it from the config.
