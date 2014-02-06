@@ -90,7 +90,7 @@
 
             if (!parentClass.prototype.$isClass) {
                 for (key in Base.prototype) {
-                    if (Base.prototype.hasOwnProperty(key)) {
+                    if (Base.prototype.hasOwnProperty(key) && key !== 'constructor') {
                         me.prototype[key] = Base.prototype[key];
                     }
                 }

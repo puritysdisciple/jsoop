@@ -1,6 +1,4 @@
 (function () {
-    'use strict';
-
     var Loader = function () {};
 
     JSoop.apply(Loader.prototype, {
@@ -22,6 +20,8 @@
                 fn = JSoop.objectQuery(className);
 
                 if (!fn) {
+                    JSoop.log('Loading ' + className);
+
                     path = Loader.getPathFromClassName(className);
                     Loader.loadScriptFile(path, Loader.onFileLoaded, JSoop.error);
 
@@ -44,12 +44,14 @@
                 return Loader;
             }
 
-                //config = Loader.getConfig(),
-                //noCacheUrl = url + (config.disableCaching ? ('?' + config.disableCachingParam + '=' + Ext.Date.now()) : ''),
+            var response = Loader.loadFile(url, onLoad, onError);
+
+            eval(response);
+        },
+        loadFile: function (url, onLoad, onError) {
             var isCrossOriginRestricted = false,
-                debugSourceURL = '',
                 scope = Loader,
-                xhr, status;
+                xhr, status, response;
 
             if (typeof XMLHttpRequest != 'undefined') {
                 xhr = new XMLHttpRequest();
@@ -64,6 +66,9 @@
                 isCrossOriginRestricted = true;
             }
 
+            onLoad = onLoad || JSoop.emptyFn;
+            onError = onError || JSoop.emptyFn;
+
             status = (xhr.status === 1223) ? 204 :
                 (xhr.status === 0 && ((self.location || {}).protocol == 'file:' || (self.location || {}).protocol == 'ionp:')) ? 200 : xhr.status;
 
@@ -74,15 +79,19 @@
                     "being loaded from a different domain or from the local file system whereby cross origin " +
                     "requests are not allowed due to security reasons.");
             } else if ((status >= 200 && status < 300) || (status === 304)) {
-                eval(xhr.responseText);
+                response = xhr.responseText;
 
-                onLoad.call(scope);
+                onLoad.call(scope, response);
             } else {
                 onError.call(Loader, "Failed loading synchronously via XHR: '" + url + "'; please verify that the file exists. XHR status code: " + status);
+
+                response = '';
             }
 
             // Prevent potential IE memory leak
             xhr = null;
+
+            return response;
         }
     });
 

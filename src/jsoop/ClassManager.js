@@ -36,17 +36,15 @@
                 processors = [],
                 requires, key;
 
-            BP.extend.call(newClass, config.extend);
-            newClass.prototype.$className = className;
-
-            JSoop.Loader.require(config.extend);
-
             requires = JSoop.toArray(config.requires || []);
             requires.push(config.extend);
 
             JSoop.Loader.require(requires);
 
             delete config.requires;
+
+            BP.extend.call(newClass, config.extend);
+            newClass.prototype.$className = className;
 
             //At this point we have a new class that extends the specified class.
             //Now we need to apply all the new members to it from the config.
