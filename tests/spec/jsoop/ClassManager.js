@@ -30,9 +30,19 @@ describe('JSoop.ClassManager', function () {
                 }
             });
 
+            JSoop.ClassManager.create('TestNamespace.SingleMixinTest', {
+                singleton: true,
+
+                mixins: {
+                    testMixin: 'TestNamespace.Mixin'
+                }
+            });
+
             var obj = new TestNamespace.MixinTest();
 
             expect(obj.mixMethod).toBeDefined();
+
+            expect(TestNamespace.SingleMixinTest.mixMethod).toBeDefined();
         });
 
         it('with static methods', function () {

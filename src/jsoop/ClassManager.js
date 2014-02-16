@@ -27,6 +27,10 @@
                 return;
             }
 
+            if (JSoop.isFunction(config)) {
+                config = config();
+            }
+
             JSoop.applyIf(config, {
                 extend: 'JSoop.Base'
             });
@@ -58,6 +62,10 @@
                 }
             }
 
+            if (newClass.prototype.superClass.prototype.hasOwnProperty('$onExtend')) {
+                processors.push('$onExtend');
+            }
+
             config.onCreate = callback || JSoop.emptyFn;
 
             //Initialize and execute all processors found while adding members.
@@ -69,6 +77,10 @@
         initProcessors: function (processors, config) {
             JSoop.each(processors, function (processor, index) {
                 processors[index] = CM.processors[processor];
+            });
+
+            processors.sort(function (a, b) {
+                return a.weight - b.weight;
             });
 
             config.processors = processors;
@@ -141,88 +153,93 @@
         }
     });
 
-    JSoop.apply(CM.processors, {
-        //This is needed to stop the extend property from showing up in the prototype
-        extend: function () {},
+    function addProcessor (name, fn, weight) {
+        if (weight === undefined) {
+            weight = 0;
+        }
 
-        alias: function (className, cls, config, callback) {
-            var aliases = config.alias;
+        fn.weight = weight;
 
-            if (!aliases) {
-                config.aliases = [];
+        CM.processors[name] = fn;
+    }
+
+    addProcessor('extend', JSoop.emptyFn);
+    addProcessor('alias', function (className, cls, config, callback) {
+        var aliases = config.alias;
+
+        if (!aliases) {
+            config.aliases = [];
+        }
+
+        if (!JSoop.isArray(aliases)) {
+            aliases = [aliases];
+        }
+
+        JSoop.each(aliases, function (otherName) {
+            classCache[otherName] = cls;
+        });
+    });
+    addProcessor('fnAlias', function (className, cls, config, callback) {
+        var key,
+            aliases = config.fnAlias;
+
+        if (!aliases) {
+            aliases = {};
+        }
+
+        for (key in aliases) {
+            if (aliases.hasOwnProperty(key)) {
+                BP.alias.call(cls, key, aliases[key]);
             }
-
-            if (!JSoop.isArray(aliases)) {
-                aliases = [aliases];
-            }
-
-            JSoop.each(aliases, function (otherName) {
-                classCache[otherName] = cls;
-            });
-        },
-
-        fnAlias: function (className, cls, config, callback) {
-            var key,
-                aliases = config.fnAlias;
-
-            if (!aliases) {
-                aliases = {};
-            }
-
-            for (key in aliases) {
-                if (aliases.hasOwnProperty(key)) {
-                    BP.alias.call(cls, key, aliases[key]);
-                }
-            }
-        },
-
-        mixins: function (className, cls, config, callback) {
-            if (!config.mixins) {
-                config.mixins = {};
-            }
-
-            cls.prototype.mixins = {};
-
-            JSoop.iterate(config.mixins, function (mixin, name) {
-                if (JSoop.isString(mixin)) {
-                    mixin = JSoop.objectQuery(mixin);
-                }
-
-                cls.prototype.mixins[name] = mixin;
-
-                var key;
-
-                for (key in mixin.prototype) {
-                    if (mixin.prototype.hasOwnProperty(key)
-                        && !reservedKeys[key]
-                        && key !== 'constructor'
-                        && !cls.prototype.hasOwnProperty(key)) {
-                        cls.prototype[key] = mixin.prototype[key];
-                    }
-                }
-            });
-        },
-
-        singleton: function (className, cls, config, callback) {
-            if (!config.singleton) {
-                return true;
-            }
-
-            callback.call(CM, className, new cls(), config, callback);
-
-            return false;
-        },
-
-        statics: function (className, cls, config, callback) {
-            if (!config.statics) {
-                config.statics = {};
-            }
-
-            JSoop.iterate(config.statics, function (member, key) {
-                cls[key] = member;
-            });
         }
     });
+    addProcessor('mixins', function (className, cls, config, callback) {
+        if (!config.mixins) {
+            config.mixins = {};
+        }
+
+        cls.prototype.mixins = {};
+
+        JSoop.iterate(config.mixins, function (mixin, name) {
+            if (JSoop.isString(mixin)) {
+                mixin = JSoop.objectQuery(mixin);
+            }
+
+            cls.prototype.mixins[name] = mixin;
+
+            var key;
+
+            for (key in mixin.prototype) {
+                if (mixin.prototype.hasOwnProperty(key)
+                    && !reservedKeys[key]
+                    && key !== 'constructor'
+                    && !cls.prototype.hasOwnProperty(key)) {
+                    cls.prototype[key] = mixin.prototype[key];
+                }
+            }
+        });
+    }, 1);
+    addProcessor('singleton', function (className, cls, config, callback) {
+        if (!config.singleton) {
+            return true;
+        }
+
+        callback.call(CM, className, new cls(), config, callback);
+
+        return false;
+    }, 4);
+    addProcessor('statics', function (className, cls, config, callback) {
+        if (!config.statics) {
+            config.statics = {};
+        }
+
+        JSoop.iterate(config.statics, function (member, key) {
+            cls[key] = member;
+        });
+    }, 5);
+    addProcessor('$onExtend', function (className, cls, config, callback) {
+        cls.prototype.superClass.prototype.$onExtend(cls, config);
+    }, 3);
 
     JSoop.define = function () {
         CM.create.apply(CM, arguments);
