@@ -15,7 +15,12 @@
         },
         classCache = {},
         BP = JSoop.Base.prototype,
-        CM = JSoop.ClassManager = {};
+        CM = JSoop.ClassManager = {},
+        initMixin = function (mixin, args) {
+            var me = this;
+
+            me.mixins[mixin].prototype.constructor.apply(me, args);
+        };
 
     JSoop.apply(CM, {
         processors: {},
@@ -218,6 +223,8 @@
                 }
             }
         });
+
+        cls.prototype.initMixin = initMixin;
     }, 1);
     addProcessor('singleton', function (className, cls, config, callback) {
         if (!config.singleton) {
