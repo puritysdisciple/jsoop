@@ -1,0 +1,25 @@
+{
+    "bitwise"      : true,
+    "camelcase"    : true,
+    "curly"        : true,
+    "eqeqeq"       : true,
+    "forin"        : true,
+    "latedef"      : true,
+    "newcap"       : true,
+    "noarg"        : true,
+    "noempty"      : true,
+    "nonew"        : true,
+    "plusplus"     : true,
+    "undef"        : true,
+    "unused"       : true,
+    "trailing"     : true,
+    "quotmark"     : "single",
+    "maxparams"    : 3,
+    "maxdepth"     : 4,
+    "maxcomplexity": 5,
+    "maxlen"       : 120,
+    "browser"      : true,
+    "globals"      : {
+        "JSoop": true
+    }
+}

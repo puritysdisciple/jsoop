@@ -134,6 +134,14 @@
             }
 
             if (!cls) {
+                cls = JSoop.objectQuery(className);
+
+                if (cls) {
+                    classCache[className] = cls;
+                }
+            }
+
+            if (!cls) {
                 JSoop.error('"' + className + '" is not defined');
             }
 

@@ -23,7 +23,7 @@
                     JSoop.log('Loading ' + className);
 
                     path = Loader.getPathFromClassName(className);
-                    Loader.loadScriptFile(path, Loader.onFileLoaded, JSoop.error);
+                    Loader.loadScriptFile(path, Loader.onFileLoaded, JSoop.error, true);
 
                     fn = JSoop.objectQuery(className);
 
@@ -39,19 +39,30 @@
 
             return Loader.paths[namespace] + parts.join('/') + '.js';
         },
-        loadScriptFile: function (url, onLoad, onError) {
+        loadScriptFile: function (url, onLoad, onError, sync) {
             if (Loader.filesLoaded[url]) {
                 return Loader;
             }
 
-            var response = Loader.loadFile(url, onLoad, onError);
+            Loader.loadFile(url, function (url, response) {
+                eval(response);
 
-            eval(response);
+                (onLoad || JSoop.emptyFn).call(Loader, response);
+            }, onError, sync);
         },
-        loadFile: function (url, onLoad, onError) {
+        loadFile: function (url, onLoad, onError, sync) {
+            sync = true; //force sync for now
+
+            if (sync) {
+                Loader.loadFileSync(url, onLoad, onError);
+            } else {
+                Loader.loadFileAsync(url, onLoad, onError);
+            }
+        },
+        loadFileSync: function (url, onLoad, onError) {
             var isCrossOriginRestricted = false,
                 scope = Loader,
-                xhr, status, response;
+                xhr, status;
 
             if (typeof XMLHttpRequest != 'undefined') {
                 xhr = new XMLHttpRequest();
@@ -75,23 +86,19 @@
             isCrossOriginRestricted = isCrossOriginRestricted || (status === 0);
 
             if (isCrossOriginRestricted) {
-                onError.call(Loader, "Failed loading synchronously via XHR: '" + url + "'; It's likely that the file is either " +
-                    "being loaded from a different domain or from the local file system whereby cross origin " +
-                    "requests are not allowed due to security reasons.");
+                onError.call(Loader, [
+                    'Failed loading synchronously via XHR: "' + url + '"; It\'s likely that the file is either ',
+                    'being loaded from a different domain or from the local file system whereby cross origin ',
+                    'requests are not allowed due to security reasons.'
+                ].join(''));
             } else if ((status >= 200 && status < 300) || (status === 304)) {
-                response = xhr.responseText;
-
-                onLoad.call(scope, response);
+                onLoad.call(scope, url, xhr.responseText);
             } else {
-                onError.call(Loader, "Failed loading synchronously via XHR: '" + url + "'; please verify that the file exists. XHR status code: " + status);
-
-                response = '';
+                onError.call(Loader, 'Failed loading synchronously via XHR: "' + url + '"; please verify that the file exists. XHR status code: ' + status);
             }
 
             // Prevent potential IE memory leak
             xhr = null;
-
-            return response;
         }
     });
 
