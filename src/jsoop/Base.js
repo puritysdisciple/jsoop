@@ -38,26 +38,13 @@
 
         addMethod: (function () {
             function findParent (name) {
-                var me = this,
-                    proto;
+                var me = this;
 
                 if (!me.prototype.superClass) {
                     return;
                 }
 
-                proto = me.prototype.superClass.prototype;
-
-                do {
-                    if (proto.hasOwnProperty(name)) {
-                        return proto[name];
-                    }
-
-                    if (proto.superClass) {
-                        proto = proto.superClass.prototype;
-                    } else {
-                        return;
-                    }
-                } while (proto);
+                return me.prototype.superClass.prototype[name];
             }
 
             return function (name, method) {

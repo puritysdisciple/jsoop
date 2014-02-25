@@ -133,6 +133,8 @@
                 target[key] = source[key];
             }
         }
+
+        return target;
     };
 
     JSoop.applyIf = function (target, source) {
@@ -145,6 +147,8 @@
                 }
             }
         }
+
+        return target;
     };
 
     JSoop.namespace = function (path) {

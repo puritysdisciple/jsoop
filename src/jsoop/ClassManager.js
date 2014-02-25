@@ -115,7 +115,11 @@
 
             className = namespace.pop();
 
-            namespace = JSoop.namespace(namespace.join('.'));
+            if (namespace.length > 0) {
+                namespace = JSoop.namespace(namespace.join('.'));
+            } else {
+                namespace = JSoop.GLOBAL;
+            }
 
             namespace[className] = cls;
         },
