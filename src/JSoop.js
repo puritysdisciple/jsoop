@@ -2,7 +2,8 @@
     "use strict";
 
     var toString = Object.prototype.toString,
-        JSoop = {};
+        JSoop = {},
+        EmptyClass = function () {};
 
     //CONSTANTS
     JSoop.GLOBAL   = (new Function('return this'))();
@@ -243,6 +244,18 @@
 
         return JSoop.emptyFn;
     }());
+
+    JSoop.chain = function (obj) {
+        var newObj;
+
+        EmptyClass.prototype = obj;
+
+        newObj = new EmptyClass();
+
+        EmptyClass.prototype = null;
+
+        return newObj;
+    };
 
     JSoop.GLOBAL.JSoop = JSoop;
 }());

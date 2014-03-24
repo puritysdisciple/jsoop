@@ -2,7 +2,6 @@
     "use strict";
 
     var Base = JSoop.Base = function () {},
-        EmptyClass = function () {},
         create = Object.create || function (obj) {
             var newObj;
 
@@ -36,21 +35,12 @@
             }
         },
 
-        addMethod: (function () {
-            function findParent (name) {
-                var me = this;
+        addMethod: function (name, method) {
+            var me = this,
+                prototype = me.prototype,
+                parent = prototype[name];
 
-                if (!me.prototype.superClass) {
-                    return;
-                }
-
-                return me.prototype.superClass.prototype[name];
-            }
-
-            return function (name, method) {
-                var me = this,
-                    parent = findParent.call(me, name);
-
+            if (method !== JSoop.emptyFn) {
                 method.$owner = me;
                 method.$name = name;
 
@@ -58,9 +48,11 @@
                     method.$parent = parent;
                 }
 
-                me.prototype[name] = method;
-            };
-        }()),
+                method.displayName = me.$className + '::' + name;
+            }
+
+            prototype[name] = method;
+        },
 
         addProperty: function (name, property) {
             this.prototype[name] = property;
@@ -86,6 +78,8 @@
 
             alias.root[alias.name] = prototype[method];
         },
+
+        onExtended: [],
 
         extend: function (parentClassName) {
             var parentClass = parentClassName;

@@ -15,99 +15,14 @@
         },
         classCache = {},
         BP = JSoop.Base.prototype,
-        CM = JSoop.ClassManager = {},
+        ClassManager = JSoop.ClassManager = {},
         initMixin = function (mixin, args) {
             var me = this;
 
             me.mixins[mixin].prototype.constructor.apply(me, args);
         };
 
-    JSoop.apply(CM, {
-        processors: {},
-
-        create: function (className, config, callback) {
-            if (classCache[className]) {
-                JSoop.error('A class named "' + className + '" is already defined');
-
-                return;
-            }
-
-            if (JSoop.isFunction(config)) {
-                config = config();
-            }
-
-            JSoop.applyIf(config, {
-                extend: 'JSoop.Base'
-            });
-
-            var me = this,
-                newClass = makeConstructor(),
-                processors = [],
-                requires, key;
-
-            requires = JSoop.toArray(config.requires || []);
-            requires.push(config.extend);
-
-            JSoop.Loader.require(requires);
-
-            delete config.requires;
-
-            BP.extend.call(newClass, config.extend);
-            newClass.prototype.$className = className;
-
-            //At this point we have a new class that extends the specified class.
-            //Now we need to apply all the new members to it from the config.
-            for (key in config) {
-                if (config.hasOwnProperty(key)) {
-                    if (!CM.processors.hasOwnProperty(key)) {
-                        BP.addMember.call(newClass, key, config[key]);
-                    } else {
-                        processors.push(key);
-                    }
-                }
-            }
-
-            if (newClass.prototype.superClass.prototype.hasOwnProperty('$onExtend')) {
-                processors.push('$onExtend');
-            }
-
-            config.onCreate = callback || JSoop.emptyFn;
-
-            //Initialize and execute all processors found while adding members.
-            me.initProcessors(processors, config);
-
-            me.process.call(CM, className, newClass, config, CM.process);
-        },
-
-        initProcessors: function (processors, config) {
-            JSoop.each(processors, function (processor, index) {
-                processors[index] = CM.processors[processor];
-            });
-
-            processors.sort(function (a, b) {
-                return a.weight - b.weight;
-            });
-
-            config.processors = processors;
-        },
-
-        process: function (className, cls, config, callback) {
-            var me = this,
-                processor = config.processors.shift();
-
-            if (!processor) {
-                me.set(className, cls);
-
-                config.onCreate(cls);
-
-                return;
-            }
-
-            if (processor.call(CM, className, cls, config, callback) !== false) {
-                callback.call(CM, className, cls, config, callback);
-            }
-        },
-
+    JSoop.apply(ClassManager, {
         set: function (className, cls) {
             classCache[className] = cls;
 
@@ -162,109 +77,339 @@
                 }
             }
 
+            //<debug>
             if (!cls) {
                 JSoop.error('"' + className + '" is not defined');
             }
+            //</debug>
 
             return me.getInstantiator(args.length)(cls, args);
-        }
-    });
+        },
 
-    function addProcessor (name, fn, weight) {
-        if (weight === undefined) {
-            weight = 0;
-        }
+        get: function (name) {
+            var Cls = name;
 
-        fn.weight = weight;
-
-        CM.processors[name] = fn;
-    }
-
-    addProcessor('extend', JSoop.emptyFn);
-    addProcessor('alias', function (className, cls, config, callback) {
-        var aliases = config.alias;
-
-        if (!aliases) {
-            config.aliases = [];
-        }
-
-        if (!JSoop.isArray(aliases)) {
-            aliases = [aliases];
-        }
-
-        JSoop.each(aliases, function (otherName) {
-            classCache[otherName] = cls;
-        });
-    });
-    addProcessor('fnAlias', function (className, cls, config, callback) {
-        var key,
-            aliases = config.fnAlias;
-
-        if (!aliases) {
-            aliases = {};
-        }
-
-        for (key in aliases) {
-            if (aliases.hasOwnProperty(key)) {
-                BP.alias.call(cls, key, aliases[key]);
+            if (JSoop.isString(Cls)) {
+                Cls = JSoop.objectQuery(Cls);
+            } else if (name.$isClass) {
+                Cls = name;
+                name = Cls.prototype.$className;
             }
-        }
-    });
-    addProcessor('mixins', function (className, cls, config, callback) {
-        if (!config.mixins) {
-            config.mixins = {};
-        }
 
-        cls.prototype.mixins = {};
+            //<debug>
+            if (!Cls) {
+                JSoop.error(name + ' is not defined');
+            }
+            //</debug>
 
-        JSoop.iterate(config.mixins, function (mixin, name) {
+            return Cls;
+        },
+
+        /*---------------------------------------------------------------------------------------------------*
+         * Used to Create Classes
+         *---------------------------------------------------------------------------------------------------*/
+        preprocessors: {},
+        defaultPreprocessors: [],
+
+        postProcessors: {},
+        defaultPostProcessors: [],
+
+        create: function (className, data, onCreated) {
+            if (classCache[className]) {
+                JSoop.error('A class named "' + className + '" is already defined');
+
+                return;
+            }
+
+            if (JSoop.isFunction(data)) {
+                data = data();
+            }
+
+            JSoop.applyIf(data, {
+                extend: 'JSoop.Base'
+            });
+
+            var Cls = makeConstructor(),
+                requires;
+
+            requires = JSoop.toArray(data.requires || []);
+            requires.push(data.extend);
+
+            JSoop.Loader.require(requires);
+
+            delete data.requires;
+
+            onCreated = ClassManager.createPostProcessor(className, data, onCreated);
+
+            ClassManager.process(Cls, data, onCreated);
+        },
+
+        createPostProcessor: function (className, data, onCreated) {
+            onCreated = onCreated || JSoop.emptyFn;
+
+            return function (Cls) {
+                var postProcessors = ClassManager.defaultPostProcessors,
+                    length = postProcessors.length,
+                    i = 0,
+                    postProcessor,
+                    ret;
+
+                for (; i < length; i = i + 1) {
+                    postProcessor = postProcessors[i];
+
+                    if (JSoop.isString(postProcessor)) {
+                        postProcessor = ClassManager.postProcessors[postProcessor];
+                    }
+
+                    ret = postProcessor.call(Cls, className, Cls, data);
+
+                    if (ret !== undefined) {
+                        Cls = ret;
+                    }
+                }
+
+                onCreated.call(Cls, Cls);
+            }
+        },
+
+        addPreprocessor: function (name, fn, pos) {
+            var defaultPreprocessors = ClassManager.defaultPreprocessors;
+
+            ClassManager.preprocessors[name] = fn;
+
+            if (pos !== undefined) {
+                defaultPreprocessors.splice(pos, 0, name);
+            } else {
+                defaultPreprocessors.push(name);
+            }
+        },
+
+        addPostProcessor: function (name, fn, pos) {
+            var defaultPostProcessors = ClassManager.defaultPostProcessors;
+
+            ClassManager.postProcessors[name] = fn;
+
+            if (pos !== undefined) {
+                defaultPostProcessors.splice(pos, 0, name);
+            } else {
+                defaultPostProcessors.push(name);
+            }
+        },
+
+        onBeforeCreated: function (data, hooks) {
+            var me = this,
+                key;
+
+            for (key in data) {
+                if (data.hasOwnProperty(key) && !ClassManager.postProcessors.hasOwnProperty(key)) {
+                    BP.addMember.call(me, key, data[key]);
+                }
+            }
+
+            hooks.onCreated.call(me, me);
+        },
+
+        process: function (Cls, data, onCreated) {
+            var preprocessors = data.preprocessors || ClassManager.defaultPreprocessors,
+                preprocessStack = [],
+                hooks = {
+                    onBeforeCreated: ClassManager.onBeforeCreated
+                },
+                length = preprocessors.length,
+                i = 0,
+                preprocessor;
+
+            delete data.preprocessors;
+
+            for (; i < length; i = i + 1) {
+                preprocessor = preprocessors[i];
+
+                if (JSoop.isString(preprocessor)) {
+                    preprocessor = ClassManager.preprocessors[preprocessor];
+                }
+
+                preprocessStack.push(preprocessor);
+            }
+
+            hooks.onCreated = onCreated || JSoop.emptyFn;
+            hooks.preprocessors = preprocessStack;
+
+            ClassManager.doProcess(Cls, data, hooks);
+        },
+
+        doProcess: function (Cls, data, hooks) {
+            var preprocessors = hooks.preprocessors,
+                preprocessor = preprocessors.shift();
+
+            for (; preprocessor; preprocessor = preprocessors.shift()) {
+                preprocessor(Cls, data, hooks);
+            }
+
+            hooks.onBeforeCreated.call(Cls, data, hooks);
+        },
+
+        extend: function (parent) {
+            var me = this,
+                parentPrototype = parent.prototype,
+                prototype, basePrototype, key;
+
+            prototype = me.prototype = JSoop.chain(parentPrototype);
+
+            if (!prototype.$isClass) {
+                basePrototype = JSoop.Base.prototype;
+
+                for (key in basePrototype) {
+                    if (basePrototype.hasOwnProperty(key)) {
+                        prototype[key] = basePrototype[key];
+                    }
+                }
+            }
+
+            prototype.$class = me;
+            prototype.superClass = parent;
+
+            if (parent.onExtended) {
+                prototype.onExtended = parent.onExtended.slice();
+            }
+        },
+
+        mixin: function (name, mixin, data, hooks) {
+            var me = this,
+                prototype = me.prototype,
+                mixinPrototype;
+
+            if (!prototype.mixins) {
+                prototype.mixins = {};
+            }
+
             if (JSoop.isString(mixin)) {
                 mixin = JSoop.objectQuery(mixin);
             }
 
-            cls.prototype.mixins[name] = mixin;
+            mixinPrototype = mixin.prototype;
 
-            var key;
+            JSoop.apply(prototype, mixinPrototype);
 
-            for (key in mixin.prototype) {
-                if (mixin.prototype.hasOwnProperty(key)
-                    && !reservedKeys[key]
-                    && key !== 'constructor'
-                    && !cls.prototype.hasOwnProperty(key)) {
-                    cls.prototype[key] = mixin.prototype[key];
+            if (mixinPrototype.onMixedIn) {
+                mixinPrototype.onMixedIn.call(me, data, hooks);
+            }
+
+            prototype.mixins[name] = mixin;
+        },
+
+        onExtended: function (fn) {
+            this.onExtended.push(fn);
+        },
+
+        triggerExtended: function (data, hooks) {
+            var me = this,
+                i = 0,
+                length = (me.onExtended)? me.onExtended.length : 0;
+
+            for (; i < length; i = i + 1) {
+                me.onExtended[i].call(me, data, hooks);
+            }
+        }
+    });
+
+    /*
+     * Preprocessors
+     */
+
+    ClassManager.addPreprocessor('extend', function (Cls, data, hooks) {
+        var parentClass = JSoop.ClassManager.get(data.extend);
+
+        delete data.extend;
+
+        ClassManager.extend.call(Cls, parentClass);
+
+        if (data.onExtended) {
+            ClassManager.onExtended.call(Cls, data.onExtended);
+
+            delete data.onExtended;
+        }
+
+        ClassManager.triggerExtended.call(Cls, data, hooks);
+    });
+
+    ClassManager.addPreprocessor('mixin', function (Cls, data, hooks) {
+        var mixins = data.mixins,
+            key;
+
+        delete data.mixins;
+
+        if (mixins) {
+            for (key in mixins) {
+                if (mixins.hasOwnProperty(key)) {
+                    ClassManager.mixin.call(Cls, key, mixins[key], data, hooks);
                 }
             }
-        });
+        }
+    });
 
-        cls.prototype.initMixin = initMixin;
-    }, 1);
-    addProcessor('singleton', function (className, cls, config, callback) {
-        if (!config.singleton) {
-            return true;
+    /*
+     * Post Processors
+     */
+
+    ClassManager.addPostProcessor('fnAlias', function (className, Cls, data) {
+        var aliases = data.fnAlias || {},
+            key;
+
+        delete data.fnAlias;
+
+        for (key in aliases) {
+            if (aliases.hasOwnProperty(key)) {
+                BP.alias.call(Cls, key, aliases[key]);
+            }
+        }
+    });
+    ClassManager.addPostProcessor('singleton', function (className, Cls, data) {
+        if (data.singleton) {
+            return new Cls();
+        }
+    });
+    ClassManager.addPostProcessor('statics', function (className, Cls, data) {
+        var statics = data.statics || {},
+            key;
+
+        delete data.statics;
+
+        for (key in statics) {
+            if (statics.hasOwnProperty(key)) {
+                Cls[key] = statics[key];
+            }
+        }
+    });
+    ClassManager.addPostProcessor('set', function (className, Cls, data) {
+        var prototype = (Cls.prototype)? Cls.prototype : Cls.$class.prototype;
+
+        prototype.$className = className;
+
+        ClassManager.set(className, Cls);
+    });
+    ClassManager.addPostProcessor('alias', function (className, Cls, data) {
+        var alias = data.alias || [],
+            i = 0,
+            length;
+
+        delete data.alias;
+
+        if (!alias) {
+            return;
         }
 
-        callback.call(CM, className, new cls(), config, callback);
+        alias = JSoop.toArray(alias);
 
-        return false;
-    }, 4);
-    addProcessor('statics', function (className, cls, config, callback) {
-        if (!config.statics) {
-            config.statics = {};
+        for (length = alias.length; i < length; i = i + 1) {
+            classCache[alias[i]] = Cls;
         }
-
-        JSoop.iterate(config.statics, function (member, key) {
-            cls[key] = member;
-        });
-    }, 5);
-    addProcessor('$onExtend', function (className, cls, config, callback) {
-        cls.prototype.superClass.prototype.$onExtend(cls, config);
-    }, 3);
+    });
 
     JSoop.define = function () {
-        CM.create.apply(CM, arguments);
+        ClassManager.create.apply(ClassManager, arguments);
     };
 
     JSoop.create = function () {
-        return CM.instantiate.apply(CM, arguments);
+        return ClassManager.instantiate.apply(ClassManager, arguments);
     };
 }());
