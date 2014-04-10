@@ -169,7 +169,7 @@
                 }
 
                 onCreated.call(Cls, Cls);
-            }
+            };
         },
 
         addPreprocessor: function (name, fn, pos) {
@@ -201,7 +201,7 @@
                 key;
 
             for (key in data) {
-                if (data.hasOwnProperty(key) && !ClassManager.postProcessors.hasOwnProperty(key)) {
+                if (data.hasOwnProperty(key)) {
                     BP.addMember.call(me, key, data[key]);
                 }
             }
@@ -268,6 +268,8 @@
             prototype.$class = me;
             prototype.superClass = parent;
 
+            prototype.constructor = parentPrototype.constructor;
+
             if (parent.onExtended) {
                 prototype.onExtended = parent.onExtended.slice();
             }
@@ -276,14 +278,21 @@
         mixin: function (name, mixin, data, hooks) {
             var me = this,
                 prototype = me.prototype,
-                mixinPrototype;
+                mixinPrototype, mixinName;
 
             if (!prototype.mixins) {
                 prototype.mixins = {};
             }
 
             if (JSoop.isString(mixin)) {
+                mixinName = mixin;
                 mixin = JSoop.objectQuery(mixin);
+
+                //<debug>
+                if (!mixin) {
+                    JSoop.error('Mixin "' + mixinName + '" is not defined');
+                }
+                //</debug>
             }
 
             mixinPrototype = mixin.prototype;
@@ -298,11 +307,17 @@
         },
 
         onExtended: function (fn) {
-            this.onExtended.push(fn);
+            var me = this.prototype;
+
+            if (!me.onExtended) {
+                me.onExtended = [];
+            }
+
+            me.onExtended.push(fn);
         },
 
         triggerExtended: function (data, hooks) {
-            var me = this,
+            var me = this.prototype,
                 i = 0,
                 length = (me.onExtended)? me.onExtended.length : 0;
 
@@ -344,6 +359,8 @@
                     ClassManager.mixin.call(Cls, key, mixins[key], data, hooks);
                 }
             }
+
+            Cls.prototype.initMixin = initMixin;
         }
     });
 

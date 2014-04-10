@@ -79,8 +79,6 @@
             alias.root[alias.name] = prototype[method];
         },
 
-        onExtended: [],
-
         extend: function (parentClassName) {
             var parentClass = parentClassName;
 

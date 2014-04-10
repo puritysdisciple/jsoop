@@ -11,7 +11,7 @@
 
         initConfig: function (config) {
             var me = this,
-                defaults = me.defaults,
+                defaults = me.config.defaults,
                 currentProto = me.$class.prototype;
 
             if (!config) {
@@ -20,12 +20,18 @@
 
             me.originalConfig = config;
 
+            //todo: this needs to be cached for performance reasons
             while (defaults) {
                 JSoop.applyIf(config || {}, JSoop.clone(defaults));
 
                 if (currentProto.superClass) {
                     currentProto = currentProto.superClass.prototype;
-                    defaults = currentProto.defaults;
+
+                    if (currentProto.config) {
+                        defaults = currentProto.config.defaults;
+                    } else {
+                        defaults = false;
+                    }
                 } else {
                     defaults = false;
                 }
@@ -36,9 +42,10 @@
 
         checkRequired: function () {
             var me = this,
-                required = me.required || [],
+                required = me.config.required || [],
                 missing = [];
 
+            //todo: this needs to climb the prototype chain to find inherited required config
             JSoop.each(required, function (key) {
                 if (me[key] === undefined) {
                     missing.push(key);

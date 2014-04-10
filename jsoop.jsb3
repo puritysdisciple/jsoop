@@ -9,7 +9,26 @@
         "fileIncludes": [{
             "text": "JSoop.js",
             "path": "src/"
+        }]
+    }, {
+        "id": "util",
+        "name": "Utility",
+        "file": "pkgs/util.js",
+        "fileIncludes": [{
+            "text": "Array.js",
+            "path": "src/jsoop/util/"
         }, {
+            "text": "Object.js",
+            "path": "src/jsoop/util/"
+        }, {
+            "text": "Function.js",
+            "path": "src/jsoop/util/"
+        }]
+    }, {
+        "id": "classes",
+        "name": "Classes",
+        "file": "pkgs/classes.js",
+        "fileIncludes": [{
             "text": "Loader.js",
             "path": "src/jsoop/"
         }, {
