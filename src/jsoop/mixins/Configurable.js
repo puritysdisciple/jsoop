@@ -2,6 +2,8 @@
     "use strict";
 
     JSoop.define('JSoop.mixins.Configurable', {
+        isConfigurable: true,
+
         constructor: function (config) {
             var me = this;
 

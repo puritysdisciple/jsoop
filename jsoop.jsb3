@@ -61,6 +61,8 @@
         },
         "packages": [
             "core",
+            "util",
+            "classes",
             "mixins"
         ]
     }, {
@@ -69,6 +71,8 @@
         "compress": true,
         "packages": [
             "core",
+            "util",
+            "classes",
             "mixins"
         ]
     }]

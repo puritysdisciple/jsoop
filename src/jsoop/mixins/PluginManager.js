@@ -2,6 +2,8 @@
     "use strict";
 
     JSoop.define('JSoop.mixins.PluginManager', {
+        isPluginManager: true,
+
         constructor: function () {
             var me = this,
                 plugins = me.plugins || {};

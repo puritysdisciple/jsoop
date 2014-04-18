@@ -81,7 +81,7 @@
 
             for (i = 0, length = listeners.length; i < length; i = i + 1) {
                 if (listeners[i].callFn.apply(this, arguments) === false) {
-                    return;
+                    return false;
                 }
             }
         }
@@ -218,7 +218,7 @@
 
             if (me[nativeCallbackName] && JSoop.isFunction(me[nativeCallbackName])) {
                 if (me[nativeCallbackName].apply(me, args) === false) {
-                    return;
+                    return false;
                 }
             }
 
@@ -226,7 +226,7 @@
                 return;
             }
 
-            me.events[ename].fire.apply(me.events[ename], args);
+            return me.events[ename].fire.apply(me.events[ename], args);
         },
         addManagedListener: function (observable, ename, fn, scope, options) {
             var me = this,
