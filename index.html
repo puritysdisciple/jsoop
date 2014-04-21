@@ -9,9 +9,9 @@
 
     <title>JSoop - The Object Oriented Library</title>
 
-    <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/prism.css">
 
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -32,13 +32,12 @@
 <div class="jumbotron">
     <div class="container">
         <h1>JSoop</h1>
-        <p>JSoop brings powerful OOP to your JS by supplying the missing foundation for building sophisticated object oriented programs. It supplies all the pieces you need to start building right out of the box.</p>
+        <p>JSoop brings powerful OOP to your JS by providing the missing foundation for building sophisticated object oriented programs. It supplies all the pieces you need to start building right out of the box.</p>
         <p><a class="btn btn-primary btn-lg" role="button">Getting Started &raquo;</a></p>
     </div>
 </div>
 
 <div class="container">
-    <!-- Example row of columns -->
     <div class="row">
         <div class="col-md-4">
             <h2>Classes</h2>
@@ -59,11 +58,33 @@
 
     <hr>
 
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Example Usage</h2>
+            <p>Doing basic OOP things in javascript, like inheritance, can sometimes be tricky. JSoop takes care of all of this for you by providing everything out of the box.</p>
+            <p>In this basic example we are extending an existing class, overriding its constructor, and calling the parent class' constructor. It couldn't be any simpler.</p>
+            <p><a class="btn btn-success btn-lg" href="https://github.com/puritysdisciple/jsoop" role="button">Download &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+<pre><code class="language-javascript">JSoop.define('MyNamespace.MyClass', {
+    extend: 'MyNamespace.MyParentClass', //extend another class
+
+    constructor: function () {
+        var me = this;
+
+        //class specific construction code
+
+        me.callParent(arguments); //call the parent class' constructor
+    }
+});</code></pre>
+        </div>
+    </div>
     <footer>
     </footer>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="js/prism.min.js"></script>
 </body>
 </html>
