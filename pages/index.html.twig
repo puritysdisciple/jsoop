@@ -1,0 +1,47 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h1>JSoop</h1>
+        <p>JSoop brings powerful OOP to your JS by providing the missing foundation for building sophisticated object oriented programs. It supplies all the pieces you need to start building right out of the box.</p>
+        <p><a class="btn btn-primary btn-lg" href="features.html" role="button">Features &raquo;</a></p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Classes</h2>
+            <p>Everything you need to create classes, namespaces, advanced inheritance, access to parent methods, and apply mixins to your objects.</p>
+            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Mixins</h2>
+            <p>Several power mixins are included that provide your objects with custom events, advanced configuration, and the ability to manage plugins.</p>
+            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Utility</h2>
+            <p>Many utility functions including type checking, object cloning, namespacing, function binding, and much more.</p>
+            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Example Usage</h2>
+            <p>Doing basic OOP things in javascript, like inheritance, can sometimes be tricky. JSoop takes care of all of this for you by providing everything out of the box.</p>
+            <p>In this basic example we are extending an existing class, overriding its constructor, and calling the parent class' constructor. It couldn't be any simpler.</p>
+            <p><a class="btn btn-success btn-lg" href="https://github.com/puritysdisciple/jsoop" role="button">Download &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+            <pre data-src="{{ assets }}/examples/home-demo.js"></pre>
+        </div>
+    </div>
+    <footer>
+    </footer>
+</div>
+{% endblock %}

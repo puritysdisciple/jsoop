@@ -1,0 +1,8 @@
+pages: pages/
+assets: assets/
+layouts: layouts/
+target: target/
+plugins: plugins/
+localization:
+  path: locale/
+  localize: all
