@@ -1,0 +1,90 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Classes</h1>
+            <p>The primary focus of JSoop is to provide a powerful class system on top of JavaScript's already strong prototypal base.</p>
+        </div>
+    </div>
+    <div class="container feature-section">
+        <div class="row">
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-upload"></span> Inheritance</h2>
+                <p>Extending a class in javascript is much less intuitive than other languages. JSoop fixes this problem by giving you a simple syntax, as well as instant access to the super class' methods.</p>
+            </div>
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-pushpin"></span> Statics</h2>
+                <p>JSoop makes it easy to define static methods on any of your classes without you having to worry about when they get added, or where.</p>
+            </div>
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-download"></span> Mixins</h2>
+                <p>Making reusable code is a trivial with JSoop. Not only can you create powerful classes, but you can also create and inject mixins into any of these classes.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-screenshot"></span> Singletons</h2>
+                <p>Singletons in javascript aren't intuitive to create. JSoop fixes this by allowing you to make any normal class a singleton with a single flag.</p>
+            </div>
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-gift"></span> Decencies</h2>
+                <p>Grabbing external dependencies is simple with the loader. Just tell JSoop what other classes are required, and it'll go and get them before defining your class.</p>
+            </div>
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-refresh"></span> Aliases</h2>
+                <p>Whether you're trying to add backwards compatibility, or giving developers several ways to access your classes, JSoop makes it easy to define function and class aliases.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-flash"></span> Hooks</h2>
+                <p>If JSoop doesn't support the kind of class you want to create, that's no problem. The class system provides several hooks during and after the creation of a class that allow you to change what it's doing.</p>
+            </div>
+        </div>
+    </div>
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Mixins</h1>
+            <p>JSoop provides several fundamental mixins out of the box to help make your application creation easier.</p>
+        </div>
+    </div>
+    <div class="container feature-section">
+        <div class="row">
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-cog"></span> Configurable</h2>
+                <p>Take object configuration to whole other level! Inheritable config defaults, required config values, parasitic inheritance support, it's all here.</p>
+            </div>
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-share"></span> Observable</h2>
+                <p>Bring custom events to any object by adding this mixin. Everything from setup to tear down is taken care of. Have you ever wanted to listen to another object's events, but hated having to manage those listeners? Observable's got you covered.</p>
+            </div>
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-th-large"></span> Plugin Manager</h2>
+                <p>Allow any object to have support for running third party plugins. Plugin manager makes it easy for you to give access to your objects to anyone that wants it in a way that allows for easy setup and tear down.</p>
+            </div>
+        </div>
+    </div>
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Utility</h1>
+            <p>While utility functions are not the focus of JSoop, it does expose several of its internal utility methods.</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-search"></span> Type Checking</h2>
+                <p>JSoop provides a host of type checking functions that allow you to determine the type of any JavaScript object, even the more annoying ones like Array.</p>
+            </div>
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-list"></span> Object Utilities</h2>
+                <p>Working with objects can sometimes be troublesome, JSoop provides ways to merge, clone, iterate, and query them easily.</p>
+            </div>
+            <div class="col-md-4">
+                <h2><span class="glyphicon glyphicon-plus-sign"></span> More</h2>
+                <p>There are many more utility functions that JSoop provides. Check out the documentation for an official list of them.</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
