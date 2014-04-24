@@ -1,0 +1,47 @@
+.feature-section {
+    margin-bottom: 30px;
+}
+
+.usage-sidebar {
+    width: 194px;
+}
+
+.usage-sidebar .nav .nav {
+    display: none;
+}
+
+.usage-sidebar .nav > li > a {
+    border-left: 3px solid transparent;
+}
+
+.usage-sidebar .nav .nav > li > a {
+    padding-left: 30px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.usage-sidebar .nav li.active .nav {
+    display: block;
+}
+
+.usage-sidebar > .nav > li.active > a {
+    background-color: #eee;
+}
+
+.usage-sidebar > .nav > li.active > a {
+    border-color: #428bca;
+}
+
+.callout {
+    margin: 20px 0;
+    padding: 20px;
+    border-left: 3px solid #eee;
+}
+
+.callout-warning {
+    background-color: #fcf8f2;
+    border-color: #f0ad4e;
+}
+    .callout-warning h4 {
+        color: #f0ad4e;
+    }
