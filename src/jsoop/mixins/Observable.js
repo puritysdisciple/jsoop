@@ -206,11 +206,23 @@
 
             me.events[ename].removeAllListeners();
         },
+        getNativeMethodName: function (ename) {
+            var parts = ename.split(/([^a-z0-9])/i),
+                name = 'on';
+
+            JSoop.each(parts, function (part) {
+                if ((/[a-z0-9]/i).test(part)) {
+                    name = name + part.substr(0, 1).toUpperCase() + part.substr(1);
+                }
+            });
+
+            return name;
+        },
         fireEvent: function () {
             var me = this,
                 args = Array.prototype.slice.call(arguments, 0),
                 ename = args.shift(),
-                nativeCallbackName = 'on' + ename.substr(0, 1).toUpperCase() + ename.substr(1);
+                nativeCallbackName = me.getNativeMethodName(ename);
 
             if (me.eventsSuspended) {
                 return;

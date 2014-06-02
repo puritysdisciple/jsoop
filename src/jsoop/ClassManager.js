@@ -278,7 +278,7 @@
         mixin: function (name, mixin, data, hooks) {
             var me = this,
                 prototype = me.prototype,
-                mixinPrototype, mixinName;
+                key, fn, mixinPrototype, mixinName;
 
             if (!prototype.mixins) {
                 prototype.mixins = {};
@@ -297,7 +297,11 @@
 
             mixinPrototype = mixin.prototype;
 
-            JSoop.apply(prototype, mixinPrototype);
+            for (key in mixinPrototype) {
+                if (mixinPrototype.hasOwnProperty(key) && !prototype[key] && key !== 'onMixedIn') {
+                    prototype[key] = mixinPrototype[key];
+                }
+            }
 
             if (mixinPrototype.onMixedIn) {
                 mixinPrototype.onMixedIn.call(me, data, hooks);
@@ -354,6 +358,10 @@
         delete data.mixins;
 
         if (mixins) {
+            if (Cls.prototype.mixins) {
+                JSoop.applyIf(mixins, Cls.prototype.mixins);
+            }
+
             for (key in mixins) {
                 if (mixins.hasOwnProperty(key)) {
                     ClassManager.mixin.call(Cls, key, mixins[key], data, hooks);

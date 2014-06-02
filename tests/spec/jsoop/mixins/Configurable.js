@@ -27,9 +27,11 @@ describe('JSoop.mixins.Configurable', function () {
                 configurable: 'JSoop.mixins.Configurable'
             },
 
-            defaults: {
-                configTest: 'BOO',
-                otherConfigTest: 'YAY'
+            config: {
+                defaults: {
+                    configTest: 'BOO',
+                    otherConfigTest: 'YAY'
+                }
             },
 
             constructor: function (config) {
@@ -55,16 +57,20 @@ describe('JSoop.mixins.Configurable', function () {
                 configurable: 'JSoop.mixins.Configurable'
             },
 
-            defaults: {
-                parentConfig: 1
+            config: {
+                defaults: {
+                    parentConfig: 1
+                }
             }
         });
 
         JSoop.define('TestNamespace.DefaultChildConfigTest', {
             extend: 'TestNamespace.DefaultParentConfigTest',
 
-            defaults: {
-                childConfig: 1
+            config: {
+                defaults: {
+                    childConfig: 1
+                }
             },
 
             constructor: function (config) {
@@ -91,9 +97,11 @@ describe('JSoop.mixins.Configurable', function () {
                 configurable: 'JSoop.mixins.Configurable'
             },
 
-            required: [
-                'requiredKey'
-            ],
+            config: {
+                required: [
+                    'requiredKey'
+                ]
+            },
 
             constructor: function (config) {
                 var me = this;

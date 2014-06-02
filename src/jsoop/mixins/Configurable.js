@@ -13,7 +13,8 @@
 
         initConfig: function (config) {
             var me = this,
-                defaults = me.config.defaults,
+                protoConfig = me.config || {},
+                defaults = protoConfig.defaults || {},
                 currentProto = me.$class.prototype;
 
             if (!config) {
@@ -44,7 +45,8 @@
 
         checkRequired: function () {
             var me = this,
-                required = me.config.required || [],
+                protoConfig = me.config || {},
+                required = protoConfig.required || [],
                 missing = [];
 
             //todo: this needs to climb the prototype chain to find inherited required config

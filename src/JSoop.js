@@ -137,7 +137,7 @@
         //Gecko rendering engine doesn't seem to reparse the scope. arguments fixes this. Unknown reason.
         var nArgs = arguments,
             error = nArgs[0],
-            method = this.error.caller;
+            method = JSoop.error.caller;
 
         if (JSoop.isString(error)) {
             error = {
