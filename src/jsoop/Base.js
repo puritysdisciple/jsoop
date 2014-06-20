@@ -58,25 +58,29 @@
             this.prototype[name] = property;
         },
 
-        alias: function (method, alias) {
+        alias: function (method, aliases) {
             var me = this,
                 prototype = me.prototype;
 
-            if (JSoop.isString(alias)) {
-                alias = {
-                    name: alias
-                };
-            }
+            aliases = JSoop.toArray(aliases);
 
-            JSoop.applyIf(alias, {
-                root: prototype
+            JSoop.each(aliases, function (alias) {
+                if (JSoop.isString(alias)) {
+                    alias = {
+                        name: alias
+                    };
+                }
+
+                JSoop.applyIf(alias, {
+                    root: prototype
+                });
+
+                if (JSoop.isString(alias.root)) {
+                    alias.root = JSoop.objectQuery(alias.root);
+                }
+
+                alias.root[alias.name] = prototype[method];
             });
-
-            if (JSoop.isString(alias.root)) {
-                alias.root = JSoop.objectQuery(alias.root);
-            }
-
-            alias.root[alias.name] = prototype[method];
         },
 
         extend: function (parentClassName) {

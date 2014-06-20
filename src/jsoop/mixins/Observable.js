@@ -92,10 +92,10 @@
 
         fnAlias: {
             addListener: 'on',
-            removeListener: 'un',
+            removeListener: ['un', 'off'],
 
             addManagedListener: 'mon',
-            removeManagedListener: 'mun'
+            removeManagedListener: ['mun', 'moff']
         },
 
         constructor: function () {
@@ -222,11 +222,19 @@
             var me = this,
                 args = Array.prototype.slice.call(arguments, 0),
                 ename = args.shift(),
-                nativeCallbackName = me.getNativeMethodName(ename);
+                nativeCallbackName;
 
             if (me.eventsSuspended) {
                 return;
             }
+
+            me.nativeCallbackCache = me.nativeCallbackCache || {};
+
+            if (!me.nativeCallbackCache[ename]) {
+                me.nativeCallbackCache[ename] = me.getNativeMethodName(ename);
+            }
+
+            nativeCallbackName = me.nativeCallbackCache[ename];
 
             if (me[nativeCallbackName] && JSoop.isFunction(me[nativeCallbackName])) {
                 if (me[nativeCallbackName].apply(me, args) === false) {
