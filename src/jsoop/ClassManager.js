@@ -19,6 +19,9 @@
         initMixin = function (mixin, args) {
             var me = this;
 
+            if (args === undefined) {
+                args = [];
+            }
             me.mixins[mixin].prototype.constructor.apply(me, args);
         };
 

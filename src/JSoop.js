@@ -108,7 +108,17 @@
 
         if (console) {
             return function () {
-                return console.log.apply(console, arguments);
+                if (console) {
+                    if (console.log.apply) {
+                        return function () {
+                            return console.log.apply(console, arguments);
+                        };
+                    } else {
+                        return function () {
+                            return console.log(arguments);
+                        };
+                    }
+                }
             };
         }
 
@@ -161,6 +171,6 @@
             JSoop.log(error);
         }
 
-        throw error.msg;
+        throw new Error(error.msg);
     };
 }());
