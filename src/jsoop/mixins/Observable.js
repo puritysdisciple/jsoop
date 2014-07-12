@@ -276,7 +276,7 @@
             if (clear || (listener.observable === observable && (!ename || listener.ename === ename) && (!fn || listener.fn === fn))) {
                 listener.observable.un(listener.ename, listener.fn);
 
-                managedListeners.splice(managedListeners.indexOf(listener), 1);
+                managedListeners.splice(JSoop.util.Array.indexOf(managedListeners, listener), 1);
             }
         },
 
