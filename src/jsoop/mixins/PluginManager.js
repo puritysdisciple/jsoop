@@ -23,6 +23,18 @@
 
                 me.plugins[key] = JSoop.create(plugin.type, plugin);
             });
+        },
+
+        destroyPlugins: function () {
+            var me = this;
+
+            JSoop.iterate(me.plugins, function (plugin, key) {
+                if (plugin.destroy) {
+                    plugin.destroy();
+                }
+            });
+
+            me.plugins = {};
         }
     });
 }());
