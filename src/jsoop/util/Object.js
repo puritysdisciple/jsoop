@@ -107,9 +107,28 @@
         return true;
     };
 
+    // ie8 compatible for-in
+    JSoopObject.forIn = function (obj, fn){
+        var key,
+            hasConstructor = false,
+            filterKey = 'constructor';
+
+        for (key in obj){
+            if(key === filterKey){
+                hasConstructor = true;
+            }
+            fn.call(obj, key);
+        }
+
+        if(!hasConstructor && obj.hasOwnProperty(filterKey)){
+            fn.call(obj, filterKey);
+        }
+    };
+
     JSoop.clone = JSoopObject.clone;
     JSoop.objectQuery = JSoopObject.query;
     JSoop.apply = JSoopObject.apply;
     JSoop.applyIf = JSoopObject.applyIf;
     JSoop.iterate = JSoopObject.iterate;
+    JSoop.forIn = JSoopObject.forIn;
 }());

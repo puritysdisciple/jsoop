@@ -204,11 +204,11 @@
             var me = this,
                 key;
 
-            for (key in data) {
+            JSoop.forIn(data, function(key) {
                 if (data.hasOwnProperty(key)) {
                     BP.addMember.call(me, key, data[key]);
                 }
-            }
+            });
 
             hooks.onCreated.call(me, me);
         },
