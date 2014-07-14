@@ -54,6 +54,10 @@
         return typeof obj === 'boolean';
     };
 
+    JSoop.isDate = function (obj) {
+        return toString.call(obj) === '[object Date]';
+    };
+
     JSoop.isNumber = function (obj) {
         return typeof obj === 'number';
     };
@@ -66,14 +70,18 @@
         return obj ? obj.nodeType === 1 : false;
     };
 
+    JSoop.isFunction = function (obj) {
+        return toString.call(obj) === '[object Function]';
+    };
+
     JSoop.isPrimative = function (obj) {
         var type = typeof obj;
 
         return type === 'string' || type === 'number' || type === 'boolean';
     };
 
-    JSoop.isFunction = function (obj) {
-        return toString.call(obj) === '[object Function]';
+    JSoop.isRegExp = function (obj) {
+        return toString.call(obj) === '[object RegExp]';
     };
 
     JSoop.instanceOf = function (obj, type) {
@@ -107,19 +115,11 @@
         var console = JSoop.GLOBAL.console;
 
         if (console) {
-            return function () {
-                if (console) {
-                    if (console.log.apply) {
-                        return function () {
-                            return console.log.apply(console, arguments);
-                        };
-                    } else {
-                        return function () {
-                            return console.log(arguments);
-                        };
-                    }
-                }
-            };
+            try{
+                return console.log.apply(console, arguments);
+            }catch(e){
+                return console.log(arguments);
+            }
         }
 
         return JSoop.emptyFn;
