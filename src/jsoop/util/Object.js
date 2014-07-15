@@ -9,7 +9,7 @@
         var clone = function (value) {
             var obj, i, length;
 
-            if (JSoop.isPrimative(value)) {
+            if (JSoop.isPrimitive(value)) {
                 return value;
             }
 
@@ -86,6 +86,8 @@
     };
 
     JSoopObject.iterate = function (obj, fn, scope) {
+        var hasConstructor = false;
+
         if (!JSoop.isObject(obj)) {
             return false;
         }
@@ -98,9 +100,21 @@
 
         for (key in obj) {
             if (obj.hasOwnProperty(key)) {
+                if (key === 'constructor') {
+                    hasConstructor = true;
+                }
+
                 if (fn.call(scope, obj[key], key, obj) === false) {
                     return false;
                 }
+            }
+        }
+
+
+        //IE8 doesn't find 'constructor' as a valid key as such we need to do it manually
+        if (!hasConstructor && obj.hasOwnProperty('constructor')) {
+            if (fn.call(scope, obj.constructor, 'constructor', obj) === false) {
+                return false;
             }
         }
 

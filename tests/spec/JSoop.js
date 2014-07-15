@@ -30,15 +30,15 @@ describe('JSoop', function () {
             }
         }
 
-        //This checks to make sure isPrimative is working correctly
-        expect(JSoop.isPrimative(basic.STRING)).toBe(true);
-        expect(JSoop.isPrimative(basic.NUMBER)).toBe(true);
-        expect(JSoop.isPrimative(basic.BOOL)).toBe(true);
+        //This checks to make sure isPrimitive is working correctly
+        expect(JSoop.isPrimitive(basic.STRING)).toBe(true);
+        expect(JSoop.isPrimitive(basic.NUMBER)).toBe(true);
+        expect(JSoop.isPrimitive(basic.BOOL)).toBe(true);
 
-        expect(JSoop.isPrimative(basic.ARRAY)).toBe(false);
-        expect(JSoop.isPrimative(basic.OBJECT)).toBe(false);
-        expect(JSoop.isPrimative(basic.ELEMENT)).toBe(false);
-        expect(JSoop.isPrimative(basic.FUNCTION)).toBe(false);
+        expect(JSoop.isPrimitive(basic.ARRAY)).toBe(false);
+        expect(JSoop.isPrimitive(basic.OBJECT)).toBe(false);
+        expect(JSoop.isPrimitive(basic.ELEMENT)).toBe(false);
+        expect(JSoop.isPrimitive(basic.FUNCTION)).toBe(false);
     });
 
     describe('should be able to iterate over objects', function () {
