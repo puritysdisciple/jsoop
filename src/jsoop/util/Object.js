@@ -9,7 +9,7 @@
         var clone = function (value) {
             var obj, i, length;
 
-            if (JSoop.isPrimative(value)) {
+            if (JSoop.isPrimitive(value)) {
                 return value;
             }
 

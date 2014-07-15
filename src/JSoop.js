@@ -8,6 +8,21 @@
     //CONSTANTS
     JSoop.GLOBAL   = (new Function('return this'))();
 
+    JSoop.getValue = function () {
+        var args = Array.prototype.slice.call(arguments, 0),
+            value = args[0],
+            scope, myArgs;
+
+        if (!JSoop.isFunction(value)) {
+            return value;
+        }
+
+        scope = args[1] || JSoop.GLOBAL;
+        myArgs = args[2] || [];
+
+        return value.apply(scope, args);
+    };
+
     JSoop.STRING   = 1;
     JSoop.ARRAY    = 2;
     JSoop.NUMBER   = 3;
@@ -74,7 +89,7 @@
         return toString.call(obj) === '[object Function]';
     };
 
-    JSoop.isPrimative = function (obj) {
+    JSoop.isPrimitive = function (obj) {
         var type = typeof obj;
 
         return type === 'string' || type === 'number' || type === 'boolean';
