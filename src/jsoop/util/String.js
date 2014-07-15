@@ -5,7 +5,7 @@
 
     var JSoopString = JSoop.util.String = {};
 
-    JSoopString.getBytes = function (s) {
+    JSoopString.getByteCount = function (s) {
         var bytes = 0;
 
         for (var i=0; i<s.length; i++) {
@@ -13,6 +13,4 @@
         }
         return bytes;
     };
-
-    JSoop.getBytes = JSoopString.getBytes;
 }());
