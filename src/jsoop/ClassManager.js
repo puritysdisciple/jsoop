@@ -205,7 +205,7 @@
                 foundConstructor = false,
                 key;
 
-            JSoop.forIn(data, function(key) {
+            for (key in data) {
                 if (data.hasOwnProperty(key)) {
                     if (key === 'constructor') {
                         foundConstructor = true;
@@ -213,7 +213,7 @@
 
                     BP.addMember.call(me, key, data[key]);
                 }
-            });
+            }
 
             //IE8 doesn't find 'constructor' as a valid key as such we need to do it manually
             if (!foundConstructor && data.hasOwnProperty('constructor')) {
