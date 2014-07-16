@@ -23,6 +23,9 @@
         }, {
             "text": "Function.js",
             "path": "src/jsoop/util/"
+        }, {
+            "text": "String.js",
+            "path": "src/jsoop/util/"
         }]
     }, {
         "id": "classes",
