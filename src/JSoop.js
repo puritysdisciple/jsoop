@@ -130,10 +130,12 @@
         var console = JSoop.GLOBAL.console;
 
         if (console) {
-            try{
-                return console.log.apply(console, arguments);
-            }catch(e){
-                return console.log(arguments);
+            return function () {
+                try {
+                    return console.log.apply(console, arguments);
+                } catch (e) {
+                    return console.log(arguments);
+                }
             }
         }
 

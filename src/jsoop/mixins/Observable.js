@@ -55,13 +55,18 @@
             };
         },
 
-        removeListener: function (fn) {
+        removeListener: function (fn, scope) {
             var me = this,
-                i,
-                length;
+                scopeCheck, i, length;
 
             for (i = 0, length = me.listeners.length; i < length; i = i + 1) {
-                if (me.listeners[i].fn === fn) {
+                scopeCheck = true;
+
+                if (scope && me.listeners[i].scope !== scope) {
+                    scopeCheck = false;
+                }
+
+                if (me.listeners[i].fn && scopeCheck) {
                     me.listeners.splice(i, 1);
 
                     return;
@@ -177,14 +182,14 @@
         hasEvent: function (ename) {
             return (this.events || {}).hasOwnProperty(ename);
         },
-        removeListener: function (ename, fn) {
+        removeListener: function (ename, fn, scope) {
             var me = this;
 
             if (!me.hasEvent(ename)) {
                 return;
             }
 
-            me.events[ename].removeListener(fn);
+            me.events[ename].removeListener(fn, scope);
         },
         removeAllListeners: function (ename) {
             var me = this,
