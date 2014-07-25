@@ -66,7 +66,7 @@
                     scopeCheck = false;
                 }
 
-                if (me.listeners[i].fn && scopeCheck) {
+                if (me.listeners[i].fn === fn && scopeCheck) {
                     me.listeners.splice(i, 1);
 
                     return;
