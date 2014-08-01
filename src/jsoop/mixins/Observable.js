@@ -255,12 +255,38 @@
         },
         addManagedListener: function (observable, ename, fn, scope, options) {
             var me = this,
-                managedListeners = me.managedListeners = me.managedListeners || [];
+                managedListeners = me.managedListeners = me.managedListeners || [],
+                defaultScope;
+
+            if (JSoop.isObject(ename)) {
+                defaultScope = ename.scope;
+
+                JSoop.iterate(ename, function (listener, ename) {
+                    if (ename === 'scope') {
+                        return;
+                    }
+
+                    if (JSoop.isFunction(listener)) {
+                        listener = {
+                            fn: listener
+                        };
+                    }
+
+                    if (!listener.scope && defaultScope) {
+                        listener.scope = defaultScope;
+                    }
+
+                    me.addManagedListener(observable, ename, listener.fn, listener.scope);
+                });
+
+                return;
+            }
 
             managedListeners.push({
                 observable: observable,
                 ename: ename,
-                fn: fn
+                fn: fn,
+                scope: scope
             });
 
             observable.on(ename, fn, scope, options);
@@ -279,7 +305,7 @@
                 managedListeners = me.managedListeners || [];
 
             if (clear || (listener.observable === observable && (!ename || listener.ename === ename) && (!fn || listener.fn === fn))) {
-                listener.observable.un(listener.ename, listener.fn);
+                listener.observable.un(listener.ename, listener.fn, listener.scope);
 
                 managedListeners.splice(JSoop.util.Array.indexOf(managedListeners, listener), 1);
             }
