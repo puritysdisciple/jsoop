@@ -29,6 +29,10 @@
                 var el = jQuery(this),
                     href = el.attr('href');
 
+                if (!el.length) {
+                    return false;
+                }
+
                 scrollTo(href);
 
                 return false;
