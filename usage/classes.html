@@ -10,9 +10,9 @@
 
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="../../assets/css/prism.css">
-    <link rel="stylesheet" href="../../assets/css/styles.css">
-    <link rel="stylesheet" href="../../assets/css/styles.css">
+    <link rel="stylesheet" href="/../assets/css/prism.css">
+    <link rel="stylesheet" href="/../assets/css/styles.css">
+    <link rel="stylesheet" href="/../assets/css/styles.css">
     
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -55,45 +55,45 @@
             <div class="col-md-9">
                 <h2 id="classes-basic">Basic Class</h2>
 <p>Defining a class in JSoop is extremely simple. It just requires a name, and an object containing all the properties and methods you want your class to contain.</p>
-<pre data-src="../../assets/examples/classes/basic/define.js"></pre>
+<pre data-src="/../assets/examples/classes/basic/define.js"></pre>
 <div class="callout callout-warning">
     <h4>Classes are defined globally</h4>
     <p>All classes defined by JSoop are defined at a global level. It is therefore required that you put all of your classes into namespaces to avoid collisions. In these examples, all classes will be in the <code>Demo</code> namespace.</p>
 </div>
                 <h2 id="classes-inheritance">Inheritance</h2>
 <p>Inheriting functionality from an existing class is as easy as adding an <code>extend</code> property to the object passed to <code>define</code>.</p>
-<pre data-src="../../assets/examples/classes/inheritance/basic.js"></pre>
+<pre data-src="/../assets/examples/classes/inheritance/basic.js"></pre>
 <p>One of the great things about JSoop is that it gives you access to the parent class' methods when they are overridden. This is done using <code>callParent</code> which accepts an array of arguments.</p>
-<pre data-src="../../assets/examples/classes/inheritance/callParent.js"></pre>
+<pre data-src="/../assets/examples/classes/inheritance/callParent.js"></pre>
 <div class="callout callout-warning">
     <h4>callParent accepts an array of arguments</h4>
     <p>Remember that callParent doesn't work like a normal function. It accepts an array of argument, not a list of arguments. This is similar to calling <code>apply</code> on a function. Passing a list of arguments will cause unexpected results.</p>
 </div>
                 <h2 id="classes-mixins">Mixins</h2>
 <p>A mixin is a set of functionality that could be useful to more than one class. Defining a mixin is exactly the same as defining any other class:</p>
-<pre data-src="../../assets/examples/classes/mixins/define.js"></pre>
+<pre data-src="/../assets/examples/classes/mixins/define.js"></pre>
 <p>Adding a mixin just requires a <code>mixins</code> property be added to the object used when <code>define</code> is called:</p>
-<pre data-src="../../assets/examples/classes/mixins/adding.js"></pre>
+<pre data-src="/../assets/examples/classes/mixins/adding.js"></pre>
 <p>When a mixin is added to a class, the <code>mixins</code> property gets converted into a hash of class references. This allows the mixins to be referenced via name. A common case for using a mixin is calling the mixin's constructor. JSoop supports this with a shortcut, <code>initMixin</code>, which works similar to <code>callParent</code>.</p>
-<pre data-src="../../assets/examples/classes/mixins/init.js"></pre>
+<pre data-src="/../assets/examples/classes/mixins/init.js"></pre>
                 <h2 id="classes-statics">Statics</h2>
 <p>Adding statics to a class is done by adding a <code>statics</code> property to the object passed to <code>define</code>.</p>
-<pre data-src="../../assets/examples/classes/statics/basic.js"></pre>
+<pre data-src="/../assets/examples/classes/statics/basic.js"></pre>
 <div class="callout callout-warning">
     <h4>Don't add statics to singletons</h4>
     <p>While it is possible to add statics to a singleton, it is generally bad practice. This should generally be avoided.</p>
 </div>
                 <h2 id="classes-aliases">Aliases</h2>
 <p>JSoop supports two different types of aliasing: function aliasing and class aliasing. Creating function aliases allows you to create additional names for methods, or apply methods to other objects after the class is created. Function aliasing is done using the <code>fnAlias</code> property.</p>
-<pre data-src="../../assets/examples/classes/aliases/function.js"></pre>
+<pre data-src="/../assets/examples/classes/aliases/function.js"></pre>
 <p>Class name aliases can be added via the <code>alias</code> property. This allows a class to be created via additional names when being created by <code>JSoop::create</code>.</p>
-<pre data-src="../../assets/examples/classes/aliases/name.js"></pre>
+<pre data-src="/../assets/examples/classes/aliases/name.js"></pre>
                 <h2 id="classes-singleton">Singletons</h2>
 <p>Singletons can be created by simply setting the <code>singleton</code> flag to <code>true</code>. This will replace the resulting class with an instance of itself.</p>
-<pre data-src="../../assets/examples/classes/singleton/basic.js"></pre>
+<pre data-src="/../assets/examples/classes/singleton/basic.js"></pre>
                 <h2 id="classes-dependencies">Dependencies</h2>
 <p>Dependencies can be automatically loaded using the <code>requires</code> property. Any class that is being extended will be added to this array automatically. Any classes that are listed in this array will be synchronously loaded. The loader assumes where your classes are located, so be sure to follow the naming convention if you're going to use this feature.</p>
-<pre data-src="../../assets/examples/classes/dependencies/basic.js"></pre>
+<pre data-src="/../assets/examples/classes/dependencies/basic.js"></pre>
 <div class="callout callout-warning">
     <h4>Don't make use of the loader in production</h4>
     <p>Due to the fact that the loader is synchronous, users can end up with a bad experience. In general it's good to not use this feature in production. Instead it's advisable to package your application using a builder like Sencha CMD.</p>
@@ -101,7 +101,7 @@
                 <h2 id="classes-hooks">Hooks</h2>
 <p>JSoop provides hooks that allow you to do processing at definition time or after. This allows you to do some maintenance on your classes prior to them being officially defined. The most common of these hooks is the postprocessor that is called once the class is ready to use.</p>
 <p>This hook can be used by passing a function as the third argument of <code>define</code>. This callback will receive the newly defined class as its first argument.</p>
-<pre data-src="../../assets/examples/classes/hooks/basic.js"></pre>
+<pre data-src="/../assets/examples/classes/hooks/basic.js"></pre>
             </div>
             <div class="col-md-3">
                 <div class="affix-top usage-sidebar">
@@ -133,7 +133,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script src="../../assets/js/prism.min.js"></script>
-    <script src="../../assets/js/usage.js"></script>
+<script src="/../assets/js/prism.min.js"></script>
+    <script src="/../assets/js/usage.js"></script>
 </body>
 </html>

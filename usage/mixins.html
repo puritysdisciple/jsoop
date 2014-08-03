@@ -10,9 +10,9 @@
 
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="../../assets/css/prism.css">
-    <link rel="stylesheet" href="../../assets/css/styles.css">
-    <link rel="stylesheet" href="../../assets/css/styles.css">
+    <link rel="stylesheet" href="/../assets/css/prism.css">
+    <link rel="stylesheet" href="/../assets/css/styles.css">
+    <link rel="stylesheet" href="/../assets/css/styles.css">
     
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -56,7 +56,7 @@
                 <h2 id="mixins-configurable">Configurable</h2>
 <h3 id="mixins-configurable-basic-usage">Basic Usage</h3>
 <p>The configurable mixin is used, as it name suggests, to configure classes. At its core, it takes a given config object and applies it to its class.</p>
-<pre data-src="../../assets/examples/mixins/configurable/basic.js"></pre>
+<pre data-src="/../assets/examples/mixins/configurable/basic.js"></pre>
 <div class="callout callout-warning">
     <h4>Configurable overrides</h4>
     <p>When applying a config to an object, Configruable overrides anything that already exists in the class. This can have undesirable consequences. Often the benefits of having a mutable class outweigh the pitfalls, but caution should still be taken.</p>
@@ -64,34 +64,34 @@
 <h3 id="mixins-configurable-defaults">Default Values</h3>
 <p>While the base of Configurable is fairly powerful on its own, it also gives you the ability to add default config values to your class. This is done by setting using the <code>config</code> property's <code>defaults</code> object. Any value that appears in the default will be applied to the config if it does not exist.</p>
 <p>Another powerful tool to remember is that defaults are inherited. Should a subclass' defauls override its parents, then the child's values will take precedence. This means that you can create a chain of default values through your class hierarchy giving you a lot of control over how your classes are configured.</p>
-<pre data-src="../../assets/examples/mixins/configurable/defaults.js"></pre>
+<pre data-src="/../assets/examples/mixins/configurable/defaults.js"></pre>
 <div class="callout callout-warning">
     <h4>Only missing items will be defaulted</h4>
     <p>Configurable will only apply a default value if it doesn't exist in the config given to it. This means that values like <code>undefined</code> and <code>null</code> will not trigger a default value if passed in a config.</p>
 </div>
 <h3 id="mixins-configurable-required">Required Config</h3>
 <p>While default values solve most cases of needed configuration, sometimes you need to be able to force the user to provide specific config values to make your class work. These values can be defined in the <code>required</code> property. If, after apply defaults, a config does not contain all required config items then an error will be thrown. As with defaults, required config items are inherited.</p>
-<pre data-src="../../assets/examples/mixins/configurable/required.js"></pre>
+<pre data-src="/../assets/examples/mixins/configurable/required.js"></pre>
                 <h2 id="mixins-plugin-manager">Plugin Manager</h2>
 <p>Plugin Manager is a mixins that allows your classes to create and destroy plugins. The initial setup of plugins will iterate through the <code>plugins</code> property of your class, creating a plugin for each key found.</p>
 <p>Each plugin receives a reference to itss owner as part of its config object. This allows the plugin to interact with its owner any way it wants to. A very easy and flexible way to do this is by using the <a href="#mixins-observable">Observable</a> mixin.</p>
 <p>It is important to call <code>destroyAllPlugins</code> during your class' teardown phase. This will destroy any plugins it is currently managing. Doing so will avoid memory leaks.</p>
-<pre data-src="../../assets/examples/mixins/plugin-manager/basic.js"></pre>
+<pre data-src="/../assets/examples/mixins/plugin-manager/basic.js"></pre>
                 <h2 id="mixins-observable">Observable</h2>
 <h3 id="mixins-observable-basic-usage">Basic Usage</h3>
 <p>The observable mixin gives your class the capability to manage custom events. You can fire a custom event using the <code>fireEvent</code> method, passing it a name as well as any arguments that are associated with that event.</p>
 <p>During setup, observable will automatically bind any event listeners defined in the <code>listeners</code> property of the object. This gives it great synergy when used with <a href="#mixins-configurable">Configurable</a>.</p>
-<pre data-src="../../assets/examples/mixins/observable/basic.js"></pre>
+<pre data-src="/../assets/examples/mixins/observable/basic.js"></pre>
 <div class="callout callout-warning">
     <h4>Teardown is required</h4>
     <p>It is extremely important that <code>removeAllListeners</code> and <code>removeAllManagedListeners</code> are called during an object's teardown phase. Failing to do so can cause significant memory leaks.</p>
 </div>
 <h3 id="mixins-observable-listeners">Multiple Listeners</h3>
 <p>You can add or remove multiple listeners at once using the object format. This is done by passing an object with event names as the keys and listeners as the values. Default versions of options can be added to any level of the object to apply to either all or a single listener.</p>
-<pre data-src="../../assets/examples/mixins/observable/listeners.js"></pre>
+<pre data-src="/../assets/examples/mixins/observable/listeners.js"></pre>
 <h3 id="mixins-observable-managed">Managed Listeners</h3>
 <p>For a cleaner way to listen to another object's events, you can use managed listeners. These have the same syntax as traditional listeners but use the <code>mon</code> and <code>moff</code> methods instead. The only difference being that you need to pass the object you want to listen to as your first parameter.</p>
-<pre data-src="../../assets/examples/mixins/observable/managed.js"></pre>
+<pre data-src="/../assets/examples/mixins/observable/managed.js"></pre>
             </div>
             <div class="col-md-3">
                 <div class="affix-top usage-sidebar">
@@ -118,7 +118,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script src="../../assets/js/prism.min.js"></script>
-    <script src="../../assets/js/usage.js"></script>
+<script src="/../assets/js/prism.min.js"></script>
+    <script src="/../assets/js/usage.js"></script>
 </body>
 </html>
