@@ -10,9 +10,9 @@
 
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="assets/css/prism.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/prism.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
     
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -30,14 +30,20 @@
         <div class="navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="features.html">Features</a></li>
-                <li><a href="usage.html">Usage</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usage <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="usage/classes.html">Classes</a></li>
+                        <li><a href="usage/mixins.html">Mixins</a></li>
+                    </ul>
+                </li>
                 <li><a href="https://github.com/puritysdisciple/jsoop">Download</a></li>
             </ul>
         </div>
     </div>
 </div>
 
-    <div class="jumbotron">
+    <div class="jumbotron classes">
         <div class="container">
             <h1>Classes</h1>
             <p>The primary focus of JSoop is to provide a powerful class system on top of JavaScript's already strong prototypal base.</p>
@@ -79,7 +85,7 @@
             </div>
         </div>
     </div>
-    <div class="jumbotron">
+    <div class="jumbotron mixins">
         <div class="container">
             <h1>Mixins</h1>
             <p>JSoop provides several fundamental mixins out of the box to help make your application creation easier.</p>
@@ -101,7 +107,7 @@
             </div>
         </div>
     </div>
-    <div class="jumbotron">
+    <div class="jumbotron utility">
         <div class="container">
             <h1>Utility</h1>
             <p>While utility functions are not the focus of JSoop, it does expose several of its internal utility methods.</p>
@@ -132,6 +138,6 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script src="assets/js/prism.min.js"></script>
+<script src="../assets/js/prism.min.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@ JSoop.define('Demo.Henry', {
     singleton: true,
 
     constructor: function () {
-        this.callParent('Henry', 30);
+        this.callParent(['Henry', 30]);
     }
 });
 
