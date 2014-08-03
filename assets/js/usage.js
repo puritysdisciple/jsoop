@@ -8,7 +8,7 @@
         var target = jQuery(targetHash);
 
         if (!target.length) {
-            return;
+            return false;
         }
 
         root.animate({
@@ -16,6 +16,8 @@
         }, 250, function () {
             window.location.hash = '#docs-' + targetHash.replace('#', '');
         });
+
+        return true;
     }
 
     Prism.hooks.add('after-highlight', function () {
@@ -35,9 +37,9 @@
                 var el = jQuery(this),
                     href = el.attr('href');
 
-                scrollTo(href);
-
-                return false;
+                if (!scrollTo(href)) {
+                    return false;
+                }
             });
 
             if (hash !== '#') {
