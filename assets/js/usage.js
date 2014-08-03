@@ -37,7 +37,7 @@
                 var el = jQuery(this),
                     href = el.attr('href');
 
-                if (!scrollTo(href)) {
+                if (scrollTo(href)) {
                     return false;
                 }
             });
