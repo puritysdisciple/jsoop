@@ -5,8 +5,14 @@
         scrollTimeout;
 
     function scrollTo (targetHash) {
+        var target = jQuery(targetHash);
+
+        if (!target.length) {
+            return;
+        }
+
         root.animate({
-            scrollTop: jQuery(targetHash).offset().top - 68
+            scrollTop: target.offset().top - 68
         }, 250, function () {
             window.location.hash = '#docs-' + targetHash.replace('#', '');
         });
@@ -28,10 +34,6 @@
             jQuery('a[href*="#"]').on('click', function() {
                 var el = jQuery(this),
                     href = el.attr('href');
-
-                if (!el.length) {
-                    return false;
-                }
 
                 scrollTo(href);
 
