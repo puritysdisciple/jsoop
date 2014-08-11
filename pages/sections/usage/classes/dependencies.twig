@@ -1,0 +1,7 @@
+<h2 id="classes-dependencies">Dependencies</h2>
+<p>Dependencies can be automatically loaded using the <code>requires</code> property. Any class that is being extended will be added to this array automatically. Any classes that are listed in this array will be synchronously loaded. The loader assumes where your classes are located, so be sure to follow the naming convention if you're going to use this feature.</p>
+<pre data-src="{{ root }}{{ assets }}/examples/classes/dependencies/basic.js"></pre>
+<div class="callout callout-warning">
+    <h4>Don't make use of the loader in production</h4>
+    <p>Due to the fact that the loader is synchronous, users can end up with a bad experience. In general it's good to not use this feature in production. Instead it's advisable to package your application using a builder like Sencha CMD.</p>
+</div>

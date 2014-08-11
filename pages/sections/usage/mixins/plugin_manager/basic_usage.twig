@@ -1,0 +1,4 @@
+<p>Plugin Manager is a mixins that allows your classes to create and destroy plugins. The initial setup of plugins will iterate through the <code>plugins</code> property of your class, creating a plugin for each key found.</p>
+<p>Each plugin receives a reference to itss owner as part of its config object. This allows the plugin to interact with its owner any way it wants to. A very easy and flexible way to do this is by using the <a href="#mixins-observable">Observable</a> mixin.</p>
+<p>It is important to call <code>destroyAllPlugins</code> during your class' teardown phase. This will destroy any plugins it is currently managing. Doing so will avoid memory leaks.</p>
+<pre data-src="{{ root }}{{ assets }}/examples/mixins/plugin-manager/basic.js"></pre>

@@ -1,0 +1,9 @@
+<h2 id="utility-array">Array</h2>
+<h3>JSoop.util.Array.indexOf(haystack, needle, [startIndex])</h3>
+<p>This is a shim for <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf">Array.prototype.indexOf</a>.</p>
+<h3>JSoop.toArray(array)</h3>
+<p>This converts whatever is passed in to an array. If the passed item is an array already, it will be returned. If it isn't, it will be wrapped in an array. This is useful for creating functions that can handle multiple items or a single item.</p>
+<pre data-src="{{ root }}{{ assets }}/examples/utility/array/to-array.js"></pre>
+<h3>JSoop.each(array, fn, [scope])</h3>
+<p>This iterates over the array, executing the given function for each item. If the function returns <code>false</code> then the iteration will stop. If <code>scope</code> is defined, then the function will be bound to that scope. The function receives three arguments when called: the current item, the current index and the full array.</p>
+<pre data-src="{{ root }}{{ assets }}/examples/utility/array/each.js"></pre>

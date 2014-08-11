@@ -1,0 +1,9 @@
+<h2 id="classes-inheritance">Inheritance</h2>
+<p>Inheriting functionality from an existing class is as easy as adding an <code>extend</code> property to the object passed to <code>define</code>.</p>
+<pre data-src="{{ root }}{{ assets }}/examples/classes/inheritance/basic.js"></pre>
+<p>One of the great things about JSoop is that it gives you access to the parent class' methods when they are overridden. This is done using <code>callParent</code> which accepts an array of arguments.</p>
+<pre data-src="{{ root }}{{ assets }}/examples/classes/inheritance/callParent.js"></pre>
+<div class="callout callout-warning">
+    <h4>callParent accepts an array of arguments</h4>
+    <p>Remember that callParent doesn't work like a normal function. It accepts an array of argument, not a list of arguments. This is similar to calling <code>apply</code> on a function. Passing a list of arguments will cause unexpected results.</p>
+</div>

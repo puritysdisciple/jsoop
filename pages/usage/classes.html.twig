@@ -1,0 +1,49 @@
+{% extends "layout.html.twig" %}
+
+{% set root = "../" %}
+
+{% block content %}
+    <a id="classes"></a>
+    <div class="jumbotron classes">
+        <div class="container">
+            <h1>Classes</h1>
+            <p>The primary focus of JSoop is to provide a powerful class system on top of JavaScript's already strong prototypal base.</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                {% include "sections/usage/classes/basic_class.twig" %}
+                {% include "sections/usage/classes/inheritance.twig" %}
+                {% include "sections/usage/classes/mixins.twig" %}
+                {% include "sections/usage/classes/statics.twig" %}
+                {% include "sections/usage/classes/aliases.twig" %}
+                {% include "sections/usage/classes/singletons.twig" %}
+                {% include "sections/usage/classes/dependencies.twig" %}
+                {% include "sections/usage/classes/hooks.twig" %}
+            </div>
+            <div class="col-md-3">
+                <div class="affix-top usage-sidebar">
+                    <ul class="nav">
+                        <li class="active">
+                            <a href="#classes">Classes</a>
+                            <ul class="nav">
+                                <li class="active"><a href="#classes-basic">Basic Class</a></li>
+                                <li><a href="#classes-inheritance">Inheritance</a></li>
+                                <li><a href="#classes-mixins">Mixins</a></li>
+                                <li><a href="#classes-statics">Statics</a></li>
+                                <li><a href="#classes-aliases">Aliases</a></li>
+                                <li><a href="#classes-singleton">Singletons</a></li>
+                                <li><a href="#classes-dependencies">Dependencies</a></li>
+                                <li><a href="#classes-hooks">Hooks</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="{{ root }}{{ assets }}/js/usage.js"></script>
+{% endblock %}

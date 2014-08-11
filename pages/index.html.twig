@@ -1,11 +1,10 @@
 {% extends "layout.html.twig" %}
 
 {% block content %}
-<div class="jumbotron">
+<div class="jumbotron main">
     <div class="container">
         <h1>JSoop</h1>
         <p>JSoop brings powerful OOP to your JS by providing the missing foundation for building sophisticated object oriented programs. It supplies all the pieces you need to start building right out of the box.</p>
-        <p><a class="btn btn-primary btn-lg" href="features.html" role="button">Features &raquo;</a></p>
     </div>
 </div>
 
@@ -14,17 +13,17 @@
         <div class="col-md-4">
             <h2>Classes</h2>
             <p>Everything you need to create classes, namespaces, advanced inheritance, access to parent methods, and apply mixins to your objects.</p>
-            <p><a class="btn btn-default" href="usage.html#classes" role="button">View details &raquo;</a></p>
+            <p><a class="btn btn-default" href="{{ root }}usage/classes.html" role="button">View details &raquo;</a></p>
         </div>
         <div class="col-md-4">
             <h2>Mixins</h2>
             <p>Several power mixins are included that provide your objects with custom events, advanced configuration, and the ability to manage plugins.</p>
-            <p><a class="btn btn-default" href="usage.html#mixins" role="button">View details &raquo;</a></p>
+            <p><a class="btn btn-default" href="{{ root }}usage/mixins.html" role="button">View details &raquo;</a></p>
         </div>
         <div class="col-md-4">
             <h2>Utility</h2>
             <p>Many utility functions including type checking, object cloning, namespacing, function binding, and much more.</p>
-            <p><a class="btn btn-default" href="usage.html#utility" role="button">View details &raquo;</a></p>
+            <p><a class="btn btn-default" href="{{ root }}usage/utility.html" role="button">View details &raquo;</a></p>
         </div>
     </div>
 

@@ -1,9 +1,50 @@
+body {
+    padding-top: 48px;
+}
+.jumbotron h1 {
+    margin-top: 0;
+}
+
+.jumbotron {
+    background-color: #7EB0FA;
+}
+.jumbotron.main .container {
+    background-image: url("resources/images/jsoop.png");
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 170px;
+    padding-top: 10px;
+}
+.jumbotron.main .container p {
+    margin-bottom: 0;
+}
+/*
+.jumbotron.main {
+    background-color: #7EB0FA;
+}
+.jumbotron.classes {
+    background-color: #B6D15D;
+}
+.jumbotron.mixins {
+    background-color: #FFD495;
+}
+.jumbotron.utility {
+    background-color: #7EB0FA;
+}
+*/
+
 .feature-section {
     margin-bottom: 30px;
 }
 
 .usage-sidebar {
     width: 194px;
+    margin-top: 20px;
+}
+
+.usage-sidebar.affix {
+    position: fixed;
+    top: 48px;
 }
 
 .usage-sidebar .nav .nav {
@@ -18,6 +59,14 @@
     padding-left: 30px;
     padding-top: 1px;
     padding-bottom: 1px;
+}
+
+.usage-sidebar .nav .nav > li.active {
+    border-left: 3px solid #428bca;
+    background-color: #eee;
+}
+.usage-sidebar .nav .nav > li.active > a {
+    padding-left: 27px;
 }
 
 .usage-sidebar .nav li.active .nav {
@@ -35,12 +84,14 @@
 .callout {
     margin: 20px 0;
     padding: 20px;
-    border-left: 3px solid #eee;
+    border: 1px solid #eee;
+    border-left-width: 5px;
+    border-radius: 3px;
 }
 
 .callout-warning {
     background-color: #fcf8f2;
-    border-color: #f0ad4e;
+    border-left-color: #f0ad4e;
 }
     .callout-warning h4 {
         color: #f0ad4e;

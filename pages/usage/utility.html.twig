@@ -1,0 +1,45 @@
+{% extends "layout.html.twig" %}
+
+{% set root = "../" %}
+
+{% block content %}
+    <a id="classes"></a>
+    <div class="jumbotron utility">
+        <div class="container">
+            <h1>Utility</h1>
+            <p>While utility functions are not the focus of JSoop, it does expose several of its internal utility methods.</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                {% include "sections/usage/utility/array.twig" %}
+                {% include "sections/usage/utility/function.twig" %}
+                {% include "sections/usage/utility/logging.twig" %}
+                {% include "sections/usage/utility/object.twig" %}
+                {% include "sections/usage/utility/string.twig" %}
+                {% include "sections/usage/utility/type_checking.twig" %}
+            </div>
+            <div class="col-md-3">
+                <div class="affix-top usage-sidebar">
+                    <ul class="nav">
+                        <li class="active">
+                            <a href="#utility">Utility</a>
+                            <ul class="nav">
+                                <li class="active"><a href="#utility-array">Array</a></li>
+                                <li><a href="#utility-function">Function</a></li>
+                                <li><a href="#utility-logging">Logging</a></li>
+                                <li><a href="#utility-object">Object</a></li>
+                                <li><a href="#utility-string">String</a></li>
+                                <li><a href="#utility-type-checking">Type Checking</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="{{ root }}{{ assets }}/js/usage.js"></script>
+{% endblock %}

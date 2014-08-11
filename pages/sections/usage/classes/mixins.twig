@@ -1,0 +1,7 @@
+<h2 id="classes-mixins">Mixins</h2>
+<p>A mixin is a set of functionality that could be useful to more than one class. Defining a mixin is exactly the same as defining any other class:</p>
+<pre data-src="{{ root }}{{ assets }}/examples/classes/mixins/define.js"></pre>
+<p>Adding a mixin just requires a <code>mixins</code> property be added to the object used when <code>define</code> is called:</p>
+<pre data-src="{{ root }}{{ assets }}/examples/classes/mixins/adding.js"></pre>
+<p>When a mixin is added to a class, the <code>mixins</code> property gets converted into a hash of class references. This allows the mixins to be referenced via name. A common case for using a mixin is calling the mixin's constructor. JSoop supports this with a shortcut, <code>initMixin</code>, which works similar to <code>callParent</code>.</p>
+<pre data-src="{{ root }}{{ assets }}/examples/classes/mixins/init.js"></pre>

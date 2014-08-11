@@ -1,0 +1,39 @@
+{% extends "layout.html.twig" %}
+
+{% set root = "../" %}
+
+{% block content %}
+    <a id="mixins"></a>
+    <div class="jumbotron mixins">
+        <div class="container">
+            <h1>Mixins</h1>
+            <p>JSoop provides several fundamental mixins out of the box to help make your application creation easier.</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                {% include "sections/usage/mixins/configurable.twig" %}
+                {% include "sections/usage/mixins/plugin_manager.twig" %}
+                {% include "sections/usage/mixins/observable.twig" %}
+            </div>
+            <div class="col-md-3">
+                <div class="affix-top usage-sidebar">
+                    <ul class="nav">
+                        <li class="active">
+                            <a href="#mixins">Mixins</a>
+                            <ul class="nav">
+                                <li class="active"><a href="#mixins-configurable">Configurable</a></li>
+                                <li><a href="#mixins-plugin-manager">Plugin Manager</a></li>
+                                <li><a href="#mixins-observable">Observable</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="{{ root }}{{ assets }}/js/usage.js"></script>
+{% endblock %}

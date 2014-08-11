@@ -1,0 +1,8 @@
+<h3 id="mixins-observable-basic-usage">Basic Usage</h3>
+<p>The observable mixin gives your class the capability to manage custom events. You can fire a custom event using the <code>fireEvent</code> method, passing it a name as well as any arguments that are associated with that event.</p>
+<p>During setup, observable will automatically bind any event listeners defined in the <code>listeners</code> property of the object. This gives it great synergy when used with <a href="#mixins-configurable">Configurable</a>.</p>
+<pre data-src="{{ root }}{{ assets }}/examples/mixins/observable/basic.js"></pre>
+<div class="callout callout-warning">
+    <h4>Teardown is required</h4>
+    <p>It is extremely important that <code>removeAllListeners</code> and <code>removeAllManagedListeners</code> are called during an object's teardown phase. Failing to do so can cause significant memory leaks.</p>
+</div>

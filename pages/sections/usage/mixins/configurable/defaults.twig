@@ -1,0 +1,8 @@
+<h3 id="mixins-configurable-defaults">Default Values</h3>
+<p>While the base of Configurable is fairly powerful on its own, it also gives you the ability to add default config values to your class. This is done by setting using the <code>config</code> property's <code>defaults</code> object. Any value that appears in the default will be applied to the config if it does not exist.</p>
+<p>Another powerful tool to remember is that defaults are inherited. Should a subclass' defauls override its parents, then the child's values will take precedence. This means that you can create a chain of default values through your class hierarchy giving you a lot of control over how your classes are configured.</p>
+<pre data-src="{{ root }}{{ assets }}/examples/mixins/configurable/defaults.js"></pre>
+<div class="callout callout-warning">
+    <h4>Only missing items will be defaulted</h4>
+    <p>Configurable will only apply a default value if it doesn't exist in the config given to it. This means that values like <code>undefined</code> and <code>null</code> will not trigger a default value if passed in a config.</p>
+</div>
