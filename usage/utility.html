@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+
+    <title>JSoop - The Object Oriented Library</title>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="../assets/css/prism.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">JSoop</a>
+        </div>
+        <div class="navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="../features.html">Features</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Usage <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="../usage/classes.html">Classes</a></li>
+                        <li><a href="../usage/mixins.html">Mixins</a></li>
+                        <li><a href="../usage/utility.html">Utility</a></li>
+                    </ul>
+                </li>
+                <li><a href="https://github.com/puritysdisciple/jsoop">Download</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <a id="classes"></a>
+    <div class="jumbotron utility">
+        <div class="container">
+            <h1>Utility</h1>
+            <p>While utility functions are not the focus of JSoop, it does expose several of its internal utility methods.</p>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                <h2 id="utility-array">Array</h2>
+<h3>JSoop.util.Array.indexOf(haystack, needle, [startIndex])</h3>
+<p>This is a shim for <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf">Array.prototype.indexOf</a>.</p>
+<h3>JSoop.toArray(array)</h3>
+<p>This converts whatever is passed in to an array. If the passed item is an array already, it will be returned. If it isn't, it will be wrapped in an array. This is useful for creating functions that can handle multiple items or a single item.</p>
+<pre data-src="../assets/examples/utility/array/to-array.js"></pre>
+<h3>JSoop.each(array, fn, [scope])</h3>
+<p>This iterates over the array, executing the given function for each item. If the function returns <code>false</code> then the iteration will stop. If <code>scope</code> is defined, then the function will be bound to that scope. The function receives three arguments when called: the current item, the current index and the full array.</p>
+<pre data-src="../assets/examples/utility/array/each.js"></pre>
+                <h2 id="utility-function">Function</h2>
+<h3>JSoop.emptyFn()</h3>
+<p>You can use <code>emptyFn</code> as a placeholder function. Generally this is used to provide subclasses with template functions that can be overridden.</p>
+<h3>Jsoop.bind(fn, scope)</h3>
+<p>Bind allows you to create a version of a function that will always be bound to the given scope. Most of JSoop supports scoping, but when working with code not created by JSoop this can be very handy.</p>
+<pre data-src="../assets/examples/utility/function/bind.js"></pre>
+                <h2 id="utility-logging">Logging</h2>
+error
+log
+                <h2 id="utility-object">Object</h2>
+getValue
+instanceOf
+namespace
+iterate
+apply
+applyIf
+query
+clone
+                <h2 id="utility-string">String</h2>
+padLeft
+padRight
+getByteCount
+                <h2 id="utility-type-checking">Type Checking</h2>
+<p>JSoop provides simple type checking function that allow you to correctly identify the type of objects in your code. All of the functions work the same and are attached directly to the <code>JSoop</code> object. The following functions exist:</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Function</th>
+            <th>Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>isArray</code></td>
+            <td>This will return <code>true</code> only for true arrays, not array-like objects</td>
+        </tr>
+        <tr>
+            <td><code>isBool</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>isDate</code></td>
+            <td>Only checks for the <code>Date</code> object, not strings in date format</td>
+        </tr>
+        <tr>
+            <td><code>isElement</code></td>
+            <td>This checks to see if an object is an HTMLElement</td>
+        </tr>
+        <tr>
+            <td><code>isFunction</code></td>
+            <td>Raw constructors will cause this to return <code>true</code></td>
+        </tr>
+        <tr>
+            <td><code>isNumber</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>isObject</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>isPrimitive</code></td>
+            <td>This checks for bool, number and string</td>
+        </tr>
+        <tr>
+            <td><code>isRegExp</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>isString</code></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+            </div>
+            <div class="col-md-3">
+                <div class="affix-top usage-sidebar">
+                    <ul class="nav">
+                        <li class="active">
+                            <a href="#utility">Utility</a>
+                            <ul class="nav">
+                                <li class="active"><a href="#utility-array">Array</a></li>
+                                <li><a href="#utility-function">Function</a></li>
+                                <li><a href="#utility-logging">Logging</a></li>
+                                <li><a href="#utility-object">Object</a></li>
+                                <li><a href="#utility-string">String</a></li>
+                                <li><a href="#utility-type-checking">Type Checking</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="container">
+    <footer>
+        <hr/>
+    </footer>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="../assets/js/prism.min.js"></script>
+    <script src="../assets/js/usage.js"></script>
+</body>
+</html>

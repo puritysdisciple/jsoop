@@ -5,8 +5,22 @@ body {
     margin-top: 0;
 }
 
+.jumbotron {
+    background-color: #7EB0FA;
+}
+.jumbotron.main .container {
+    background-image: url("resources/images/jsoop.png");
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 170px;
+    padding-top: 10px;
+}
+.jumbotron.main .container p {
+    margin-bottom: 0;
+}
+/*
 .jumbotron.main {
-    background-color: #45B29D;
+    background-color: #7EB0FA;
 }
 .jumbotron.classes {
     background-color: #B6D15D;
@@ -15,8 +29,9 @@ body {
     background-color: #FFD495;
 }
 .jumbotron.utility {
-    background-color: #FA847E;
+    background-color: #7EB0FA;
 }
+*/
 
 .feature-section {
     margin-bottom: 30px;
