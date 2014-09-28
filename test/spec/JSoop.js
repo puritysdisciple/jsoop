@@ -7,7 +7,9 @@ describe('JSoop', function () {
                 OBJECT:    {},
                 ELEMENT:   document.body,
                 BOOL:      true,
-                FUNCTION:  function () {}
+                FUNCTION:  function () {},
+                DATE:      new Date(),
+                REGEXP:    /[a-z]/i
             },
             types = [
                 'STRING',
@@ -16,7 +18,9 @@ describe('JSoop', function () {
                 'OBJECT',
                 'ELEMENT',
                 'BOOL',
-                'FUNCTION'
+                'FUNCTION',
+                'DATE',
+                'REGEXP'
             ],
             length = types.length,
             i, key;

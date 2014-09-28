@@ -30,6 +30,8 @@
     JSoop.ELEMENT  = 5;
     JSoop.BOOL     = 6;
     JSoop.FUNCTION = 7;
+    JSoop.DATE     = 8;
+    JSoop.REGEXP   = 9;
 
     //Methods
     JSoop.is = function (obj, type) {
@@ -52,6 +54,10 @@
             return JSoop.isElement(obj);
         case JSoop.FUNCTION:
             return JSoop.isFunction(obj);
+        case JSoop.DATE:
+            return JSoop.isDate(obj);
+        case JSoop.REGEXP:
+            return JSoop.isRegExp(obj);
         default:
             return false;
         }
