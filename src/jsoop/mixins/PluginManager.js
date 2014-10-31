@@ -28,7 +28,7 @@
 
             plugin.owner = me;
 
-            me.plugins[key] = JSoop.create(plugin.type, plugin);
+            me.plugins[name] = JSoop.create(plugin.type, plugin);
         },
 
         destroyPlugin: function (name) {

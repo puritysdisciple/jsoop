@@ -256,15 +256,22 @@
         addManagedListener: function (observable, ename, fn, scope, options) {
             var me = this,
                 managedListeners = me.managedListeners = me.managedListeners || [],
-                defaultScope;
+                defaultOptions, key;
 
             if (JSoop.isObject(ename)) {
-                defaultScope = ename.scope;
+                defaultOptions = {};
+
+                //Find the default options
+                for (key in ename) {
+                    if (ename.hasOwnProperty(key) && eventOptions.hasOwnProperty(key)) {
+                        defaultOptions[key] = ename[key];
+
+                        delete ename[key];
+                    }
+                }
 
                 JSoop.iterate(ename, function (listener, ename) {
-                    if (ename === 'scope') {
-                        return;
-                    }
+                    var options = {};
 
                     if (JSoop.isFunction(listener)) {
                         listener = {
@@ -272,11 +279,29 @@
                         };
                     }
 
-                    if (!listener.scope && defaultScope) {
-                        listener.scope = defaultScope;
+                    if (!listener.scope && defaultOptions.scope) {
+                        listener.scope = defaultOptions.scope;
                     }
 
-                    me.addManagedListener(observable, ename, listener.fn, listener.scope);
+                    //Find nested options
+                    for (key in listener) {
+                        if (listener.hasOwnProperty(key) &&
+                            eventOptions.hasOwnProperty(key)
+                            && key !== 'scope') {
+                            options[key] = listener[key];
+                        }
+                    }
+
+                    //Apply default options
+                    for (key in defaultOptions) {
+                        if (defaultOptions.hasOwnProperty(key) &&
+                            !options.hasOwnProperty(key) &&
+                            key !== 'scope') {
+                            options[key] = listener[key];
+                        }
+                    }
+
+                    me.addManagedListener(observable, ename, listener.fn, listener.scope, options);
                 });
 
                 return;
