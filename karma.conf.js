@@ -15,7 +15,7 @@ module.exports = function(config) {
 
             //Tests
             '../test/spec/*.js',
-            '../test/spec/*/*.js'
+            '../test/spec/**/*.js'
         ],
 
 

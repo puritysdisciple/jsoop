@@ -92,6 +92,19 @@
         }
     });
 
+    function getDefaultOptions (config) {
+        var defaultOptions = {},
+            key;
+
+        for (key in config) {
+            if (config.hasOwnProperty(key) && eventOptions.hasOwnProperty(key)) {
+                defaultOptions[key] = config[key];
+            }
+        }
+
+        return defaultOptions;
+    }
+
     JSoop.define('JSoop.mixins.Observable', {
         isObservable: true,
 
@@ -152,11 +165,7 @@
                 me.events[listeners.ename].addListener(listeners);
             } else {
                 //Find the default options
-                for (key in listeners) {
-                    if (listeners.hasOwnProperty(key) && eventOptions.hasOwnProperty(key)) {
-                        defaultOptions[key] = listeners[key];
-                    }
-                }
+                defaultOptions = getDefaultOptions(listeners);
 
                 //Add the listeners
                 for (key in listeners) {
@@ -183,13 +192,46 @@
             return (this.events || {}).hasOwnProperty(ename);
         },
         removeListener: function (ename, fn, scope) {
-            var me = this;
+            var me = this,
+                listeners = ename,
+                defaultOptions, key, listener;
 
-            if (!me.hasEvent(ename)) {
-                return;
+            if (!JSoop.isObject(listeners)) {
+                listeners = {
+                    ename: listeners,
+                    fn: fn,
+                    scope: scope
+                };
             }
 
-            me.events[ename].removeListener(fn, scope);
+            if (listeners.ename) {
+                if (!me.hasEvent(listeners.ename)) {
+                    return;
+                }
+
+                me.events[listeners.ename].removeListener(listeners.fn, listeners.scope);
+            } else {
+                defaultOptions = getDefaultOptions(listeners);
+
+                for (key in listeners) {
+                    if (listeners.hasOwnProperty(key) && !defaultOptions.hasOwnProperty(key)) {
+                        listener = listeners[key];
+
+                        if (JSoop.isObject(listener)) {
+                            listener.ename = key;
+                        } else {
+                            listener = {
+                                ename: key,
+                                fn: listener
+                            };
+                        }
+
+                        JSoop.applyIf(listener, defaultOptions);
+
+                        me.removeListener(listener);
+                    }
+                }
+            }
         },
         removeAllListeners: function (ename) {
             var me = this,
@@ -259,13 +301,10 @@
                 defaultOptions, key;
 
             if (JSoop.isObject(ename)) {
-                defaultOptions = {};
+                defaultOptions = getDefaultOptions(ename);
 
-                //Find the default options
-                for (key in ename) {
-                    if (ename.hasOwnProperty(key) && eventOptions.hasOwnProperty(key)) {
-                        defaultOptions[key] = ename[key];
-
+                for (key in defaultOptions) {
+                    if (defaultOptions.hasOwnProperty(key)) {
                         delete ename[key];
                     }
                 }
