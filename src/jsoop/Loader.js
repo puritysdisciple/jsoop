@@ -15,8 +15,8 @@
 
             cls = JSoop.toArray(cls);
 
-            for (i = 0, length = cls.length; i < length; i = i + 1) {
-                className = cls[i];
+            cls.forEach(function(v, i, a) {
+                className = v;
                 fn = JSoop.objectQuery(className);
 
                 if (!fn) {
@@ -31,7 +31,7 @@
                         JSoop.error('Class "' + className + '" is not defined');
                     }
                 }
-            }
+            });
         },
         getPathFromClassName: function (className) {
             var parts = className.split('.'),
